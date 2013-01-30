@@ -143,3 +143,18 @@ body .dropdown-menu li > a {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+body div.shield {
+  display: none;
+  background: url('/img/spacer.png');
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+body.shielded div.shield {
+  display: block;
+}

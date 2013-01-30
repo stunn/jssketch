@@ -72,6 +72,11 @@ jQuery(document).ready(function ($) {
       el.height((100 * el.height()) / parent.height() + "%");
     }
   });
+
+  // Enables shields when dragging to stop items (e.g. iframes) consuming the drag events.
+  $(document.body).on('panesstart panesstop', function (e) {
+    $(this).toggleClass('shielded', e.type === "panesstart");
+  });
 });
 
 jQuery(document).ready(function ($) {
