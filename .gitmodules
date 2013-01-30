@@ -1,0 +1,6 @@
+[submodule "vendor/jssketch"]
+	path = vendor/jssketch
+	url = git://github.com/mattlunn/jssketch-be.git
+[submodule "vendor/codemirror"]
+	path = vendor/codemirror
+	url = git://github.com/marijnh/CodeMirror.git

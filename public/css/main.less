@@ -1,0 +1,145 @@
+#nav {
+  background: #356e98;
+  border-right: 1px solid #1a5179;
+  float: left;
+  height: 100%;
+  width: 40px;
+  overflow: hidden;
+
+  h1 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    color: #eee;
+    font-size: 22px;
+    text-shadow: 1px 1px #000;
+    margin-top: 20px;
+  }
+
+  nav {
+    margin-top: 75px;
+    text-align: center;
+
+    button {
+      height: 26px;
+      width: 26px;
+      margin-bottom: 7px;
+    }
+  }
+}
+
+#the-form {
+  height: 100%;
+}
+
+#main {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 40px;
+  overflow: hidden;
+
+  .pane {
+    float: left;
+    height: 100%;
+
+    /* If we change the min-width and add overflow:hidden to the sections, the dropdowns stop rendering
+     * as Bootstrap adds them to the nav rather than the body */;
+    min-width: 310px;
+  }
+
+  .pane.left {
+    width: 65%;
+
+    section {
+      height: 32%;
+
+      div.container {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .pane.right {
+    width: 35%;
+
+    section {
+      height: 98%;
+
+      div.container {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  section {
+    min-height: 60px;
+
+    div.container {
+      margin: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      height: 100%;
+      position: relative;
+
+      header {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#337eb5), to(#015fa3));
+        padding: 5px 7px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        h1 {
+          color: #eee;
+          text-shadow: 1px 1px #000;
+          font-size: 12px;
+          display: inline;
+          padding-right: 20px;
+        }
+
+        label {
+          color: white;
+          display: inline;
+          font-size: 11px;
+          text-shadow: 1px 1px #000;
+          padding-bottom: 2px;
+          margin-left: 10px;
+        }
+
+        label:first-of-type {
+          margin-left: 0;
+        }
+      }
+
+      .body {
+        position: absolute;
+        top: 34px;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    }
+  }
+}
+
+section#preview {
+  #render {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+
+body, html {
+  height: 100%;
+  background: #f5f5f5;
+}
+
+.btn-mini .caret, .btn-small .caret, .btn-large .caret {
+  margin-top: 8px;
+}
+
+body .dropdown-menu li > a {
+  text-decoration: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}

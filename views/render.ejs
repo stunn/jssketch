@@ -1,0 +1,21 @@
+<%- doctypes[sketch.revisions[0].doctype].doctype %>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<% if (sketch.revisions[0].css.length) { %>
+
+    <style>
+      <%- sketch.revisions[0].css %>
+    </style>
+<% } %>
+<% if (sketch.revisions[0].javascript.length) { %>
+
+    <script>
+      <%- sketch.revisions[0].javascript %>
+    </script>
+<% } %>
+  </head>
+  <body>
+    <%- sketch.revisions[0].html %>
+  </body>
+</html>

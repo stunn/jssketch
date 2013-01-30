@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="/css/normalize.css" >
+    <link rel="stylesheet" href="/css/jquery-ui.css" >
+    <link rel="stylesheet" href="/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="/css/main.less" >
+
+    <script src="/js/application.js"></script>
+    <script src="/js/less.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/codemirror/codemirror.js"></script>
+    <script src="/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/codemirror/mode/css/css.js"></script>
+    <script src="/codemirror/mode/xml/xml.js"></script>
+    <script src="/js/sexify.js"></script>
+    <script src="/js/panes.js"></script>
+    <script src="/js/main.js"></script>
+  </head>
+  <body>
+    <form id="the-form" action="/save" method="post">
+      <div id="nav">
+        <h1>jssketch</h1>
+
+        <nav>
+          <button class="btn btn-inverse btn-mini" name="preview" type="submit"><i class="icon-white icon-play"></i></button>
+          <button class="btn btn-inverse btn-mini" name="save" type="submit"><i class="icon-white icon-briefcase"></i></button>
+        </nav>
+      </div>
+      <div id="main">
+        <div class="pane left" id="left-pane">
+          <section id="js" class="panel">
+            <div class="container">
+              <header>
+                <h1>JS</h1>
+
+                <label>Insert</label>
+
+                <select name="js_insert" class="sexy-select">
+                  <option value="body-wrapped">Before &lt;/body&gt; (wrapped)</option>
+                  <option value="body-unwrapped">Before &lt;/body&gt; (unwrapped)</option>
+                  <option value="head-wrapped">In &lt;head&gt; (wrapped)</option>
+                  <option value="head-unwrapped">In &lt;head&gt; (unwrapped)</option>
+                </select>
+
+                <!--
+                <label>Includes</label>
+                <div class="btn-group">
+                  <button class="btn dropdown-toggle btn-mini btn-primary dependancy-manager-launcher" data-toggle="dropdown" data-dm="js">jQuery 1.8.2 (+ 2) <span class="caret"></span></button>
+                </div>
+                -->
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger">Tidy</button>
+                </div>              
+
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="javascript" data-mode="javascript"><%= sketch.revisions[0].javascript %></textarea>
+              </div>
+            </div>
+          </section>
+          <section id="html" class="panel">
+            <div class="container">
+              <header>
+                <h1>HTML</h1>
+
+                <label>
+                  DocType
+                </label>
+
+                <select name="doctype" class="sexy-select">
+                <% for (var x in doctypes) { %>
+                  <option value="<%= x %>" <%= sketch.revisions[0].doctype === x ? "selected" : "" %>><%= doctypes[x].description %></option>
+                <% } %>
+                </select>
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger">Tidy</button>
+                </div>  
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="html" data-mode="xml"><%= sketch.revisions[0].html %></textarea>
+              </div>
+            </div>
+          </section>
+          <section id="css" class="panel">
+            <div class="container">
+              <header>
+                <h1>CSS</h1>
+
+                <!--
+                <label>Includes</label>
+                <div class="btn-group">
+                  <button class="btn dropdown-toggle btn-mini btn-primary" data-toggle="dropdown">jQuery UI 1.9.2 (+ 2) <span class="caret"></span></button>
+                </div>
+                -->
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger">Tidy</button>
+                </div>                
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="css" data-mode="text/css"><%= sketch.revisions[0].css %></textarea>
+              </div>
+            </div>
+          </section>            
+        </div>
+        <div class="pane right" id="right-pane">
+          <section id="preview" class="panel">
+            <div class="container">
+              <header>
+                <h1>PREVIEW</h1>
+              </header>
+              <div class="body">
+                <iframe id="render" />
+              </div>
+            </div>
+          </section> 
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
