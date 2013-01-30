@@ -115,13 +115,13 @@ jQuery(document).ready(function ($) {
       case 'preview':
         form.prop({
           target: 'render',
-          action: '/render'
+          action: form.data('preview-url')
         });
       break;
       case 'save':
         form.prop({
           target: '',
-          action: '/save'
+          action: form.data('save-url')
         });
       break;
     }

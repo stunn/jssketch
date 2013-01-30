@@ -3,28 +3,43 @@
   <head>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" href="/css/normalize.css" >
-    <link rel="stylesheet" href="/css/jquery-ui.css" >
-    <link rel="stylesheet" href="/codemirror/codemirror.css">
-    <link rel="stylesheet" href="/codemirror/theme/neat.css">
-    <link rel="stylesheet" href="/css/bootstrap.css">
-    <link rel="stylesheet/less" type="text/css" href="/css/main.less" >
+    <%
 
-    <script src="/js/application.js"></script>
-    <script src="/js/less.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/jquery-ui.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/codemirror/codemirror.js"></script>
-    <script src="/codemirror/mode/javascript/javascript.js"></script>
-    <script src="/codemirror/mode/css/css.js"></script>
-    <script src="/codemirror/mode/xml/xml.js"></script>
-    <script src="/js/sexify.js"></script>
-    <script src="/js/panes.js"></script>
-    <script src="/js/main.js"></script>
+    function prefix(host, port) {
+      return function () {
+        return 'http://' + host + (port === 80 ? '' : (':' + port)) + '/';
+      }
+    }
+
+    var jail = prefix(config.jail, config.port);
+    var base = prefix(config.base, config.port);
+
+    %>
+
+    <title>jsSketch | <%= (typeof sketch.id === "undefined" ? 'Home' : (sketch.id + ' v' + revision.id)) %></title>
+
+    <link rel="stylesheet" href="<%- base() %>css/normalize.css" >
+    <link rel="stylesheet" href="<%- base() %>css/jquery-ui.css" >
+    <link rel="stylesheet" href="<%- base() %>codemirror/codemirror.css">
+    <link rel="stylesheet" href="<%- base() %>codemirror/theme/neat.css">
+    <link rel="stylesheet" href="<%- base() %>css/bootstrap.css">
+    <link rel="stylesheet/less" type="text/css" href="<%- base() %>css/main.less" >
+
+    <script src="<%- base() %>js/application.js"></script>
+    <script src="<%- base() %>js/less.js"></script>
+    <script src="<%- base() %>js/jquery.js"></script>
+    <script src="<%- base() %>js/jquery-ui.js"></script>
+    <script src="<%- base() %>js/bootstrap.js"></script>
+    <script src="<%- base() %>codemirror/codemirror.js"></script>
+    <script src="<%- base() %>codemirror/mode/javascript/javascript.js"></script>
+    <script src="<%- base() %>codemirror/mode/css/css.js"></script>
+    <script src="<%- base() %>codemirror/mode/xml/xml.js"></script>
+    <script src="<%- base() %>js/sexify.js"></script>
+    <script src="<%- base() %>js/panes.js"></script>
+    <script src="<%- base() %>js/main.js"></script>
   </head>
   <body>
-    <form id="the-form" action="/save" method="post">
+    <form id="the-form" method="post" data-save-url="<%- base() %>save" data-preview-url="<%- jail() %>preview">
       <input type="hidden" name="id" value="<%= (typeof sketch.id === 'undefined' ? '' : sketch.id) %>" />
 
       <div id="nav">
@@ -55,20 +70,13 @@
                   <option value="head-unwrapped">In &lt;head&gt; (unwrapped)</option>
                 </select>
 
-                <!--
-                <label>Includes</label>
-                <div class="btn-group">
-                  <button class="btn dropdown-toggle btn-mini btn-primary dependancy-manager-launcher" data-toggle="dropdown" data-dm="js">jQuery 1.8.2 (+ 2) <span class="caret"></span></button>
-                </div>
-                -->
-
                 <div class="btn-group">
                   <button class="btn btn-mini btn-primary tidy-trigger">Tidy</button>
                 </div>              
 
               </header>
               <div class="body">
-                <textarea class="codemirror" name="javascript" data-mode="javascript"><%= sketch.revisions[0].javascript %></textarea>
+                <textarea class="codemirror" name="javascript" data-mode="javascript"><%= revision.javascript %></textarea>
               </div>
             </div>
           </section>
@@ -83,7 +91,7 @@
 
                 <select name="doctype" class="sexy-select">
                 <% for (var x in doctypes) { %>
-                  <option value="<%= x %>" <%= sketch.revisions[0].doctype === x ? "selected" : "" %>><%= doctypes[x].description %></option>
+                  <option value="<%= x %>" <%= revision.doctype === x ? "selected" : "" %>><%= doctypes[x].description %></option>
                 <% } %>
                 </select>
 
@@ -92,7 +100,7 @@
                 </div>  
               </header>
               <div class="body">
-                <textarea class="codemirror" name="html" data-mode="xml"><%= sketch.revisions[0].html %></textarea>
+                <textarea class="codemirror" name="html" data-mode="xml"><%= revision.html %></textarea>
               </div>
             </div>
           </section>
@@ -101,19 +109,12 @@
               <header>
                 <h1>CSS</h1>
 
-                <!--
-                <label>Includes</label>
-                <div class="btn-group">
-                  <button class="btn dropdown-toggle btn-mini btn-primary" data-toggle="dropdown">jQuery UI 1.9.2 (+ 2) <span class="caret"></span></button>
-                </div>
-                -->
-
                 <div class="btn-group">
                   <button class="btn btn-mini btn-primary tidy-trigger">Tidy</button>
                 </div>                
               </header>
               <div class="body">
-                <textarea class="codemirror" name="css" data-mode="text/css"><%= sketch.revisions[0].css %></textarea>
+                <textarea class="codemirror" name="css" data-mode="text/css"><%= revision.css %></textarea>
               </div>
             </div>
           </section>            
@@ -126,7 +127,7 @@
               </header>
               <div class="body">
                 <div class="shield"></div>
-                <iframe id="render" />
+                <iframe id="render" <%- (typeof sketch.id === "undefined" ? '' : ('src="' + jail() + 'preview/' + sketch.id + '/' + revision.id + '"')) %> />
               </div>
             </div>
           </section> 

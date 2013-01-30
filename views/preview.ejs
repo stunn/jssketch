@@ -1,0 +1,21 @@
+<%- doctypes[revision.doctype].doctype %>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<% if (revision.css.length) { %>
+
+    <style>
+      <%- revision.css %>
+    </style>
+<% } %>
+<% if (revision.javascript.length) { %>
+
+    <script>
+      <%- revision.javascript %>
+    </script>
+<% } %>
+  </head>
+  <body>
+    <%- revision.html %>
+  </body>
+</html>

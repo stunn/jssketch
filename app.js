@@ -1,21 +1,44 @@
-var express = require('express');
 var jssketch = require('./vendor/jssketch');
+var config = require('./config');
+var express = require('express');
+
 var app = express();
 var client = jssketch({
   storage: new jssketch.MemoryStorage()
 });
 
-app.use(express.bodyParser());
+var jail = express();
+var base = express();
 
-function render(sketch, res) {
+app.use(express.bodyParser());
+app.use(express.vhost(config.base, base));
+app.use(express.vhost(config.jail, jail));
+
+function param(key, func) {
+  jail.param(key, func);
+  base.param(key, func);
+}
+
+function editor(sketch, revision, res) {
   res.render('index.ejs', {
     sketch: sketch,
+    revision: revision,
+    doctypes: client.doctypes,
+    config: config
+  });
+  res.end();
+}
+
+function preview(sketch, revision, res) {
+  res.render('preview.ejs', {
+    sketch: sketch,
+    revision: revision,
     doctypes: client.doctypes
   });
   res.end();
 }
 
-app.param('id', function (req, res, next, id) {
+param('id', function (req, res, next, id) {
   if (/^[0-9a-zA-Z]{5}$/.test(id)) {
     client.load(id, function (err, sketch) {
       if (!err) {
@@ -29,11 +52,28 @@ app.param('id', function (req, res, next, id) {
   }
 });
 
-app.get('/', function (req, res) {
-  var sketch = new client.Sketch();
+param('rev', function (req, res, next, rev) {
+  if (req.sketch) {
+    rev = parseInt(rev, 10);
 
-  sketch.revisions.add(new client.Revision());
-  render(sketch, res);
+    if (isFinite(rev)) {
+      var revision = req.sketch.revisions.id(rev);
+
+      if (revision) {
+        req.revision = revision;
+      }
+    }
+  }
+
+  next();
+});
+
+base.get('/', function (req, res) {
+  var sketch = new client.Sketch();
+  var revision = new client.Revision();
+
+  sketch.revisions.add(revision);
+  editor(sketch, revision, res);
 });
 
 /**
@@ -43,7 +83,7 @@ app.get('/', function (req, res) {
  * 2. This is an update of a sketch. The sketch needs to be loaded, and a new revision added.
  * 3. This should be a fork of a sketch. A new sketch needs to be created and a new revision added.
  */
-app.post('/save', function (req, res, next) {
+base.post('/save', function (req, res, next) {
   function withSketch(sketch) {
     var revision = new client.Revision();
 
@@ -73,29 +113,38 @@ app.post('/save', function (req, res, next) {
   }
 });
 
-app.post('/render', function (req, res) {
+base.get('/:id/:rev?', function (req, res, next) {
+  var sketch = req.sketch;
+  var revision = req.revision;
+
+  if (!revision && sketch && req.params.rev === "") {
+    revision = sketch.revisions[0];
+  }
+
+  if (revision && sketch) {
+    editor(sketch, revision, res);
+  } else {
+    next();
+  }
+});
+
+jail.post('/preview', function (req, res) {
   var sketch = new client.Sketch();
   var revision = new client.Revision();
   
   revision.update(req.body);
   sketch.revisions.add(revision);
 
-  res.render('render.ejs', {
-    sketch: sketch,
-    doctypes: client.doctypes
-  });
+  preview(sketch, revision, res);
 });
 
-app.get('/:id/:rev?', function (req, res, next) {
-  var rev = parseInt(req.params.rev, 10) || 1;
-  var sketch = req.sketch;
-
-  if (sketch && sketch.revisions.id(rev)) {
-    render(req.sketch, res);
+jail.get('/preview/:id/:rev', function (req, res, next) {
+  if (req.revision) {
+    preview(req.sketch, req.revision, res);
   } else {
     next();
   }
 });
 
-app.use(express.static(__dirname + '/public'));
-app.listen(3000);
+base.use(express.static(__dirname + '/public'));
+app.listen(config.port);
