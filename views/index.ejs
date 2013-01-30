@@ -25,12 +25,18 @@
   </head>
   <body>
     <form id="the-form" action="/save" method="post">
+      <input type="hidden" name="id" value="<%= (typeof sketch.id === 'undefined' ? '' : sketch.id) %>" />
+
       <div id="nav">
         <h1>jssketch</h1>
 
         <nav>
           <button class="btn btn-inverse btn-mini" name="preview" type="submit"><i class="icon-white icon-play"></i></button>
-          <button class="btn btn-inverse btn-mini" name="save" type="submit"><i class="icon-white icon-briefcase"></i></button>
+          <button class="btn btn-inverse btn-mini" name="save" type="submit" value="update"><i class="icon-white icon-briefcase"></i></button>
+
+          <% if (sketch.id) { %>
+            <button class="btn btn-inverse btn-mini" name="save" type="submit" value="fork"><i class="icon-white icon-random"></i></button>          
+          <% } %>
         </nav>
       </div>
       <div id="main">

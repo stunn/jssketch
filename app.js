@@ -8,8 +8,6 @@ var client = jssketch({
 app.use(express.bodyParser());
 
 function render(sketch, res) {
-  console.log(JSON.stringify(client.doctypes));
-
   res.render('index.ejs', {
     sketch: sketch,
     doctypes: client.doctypes
@@ -19,11 +17,7 @@ function render(sketch, res) {
 
 app.param('id', function (req, res, next, id) {
   if (/^[0-9a-zA-Z]{5}$/.test(id)) {
-    console.log("Matching sketch with ID " + id);
-
     client.load(id, function (err, sketch) {
-      console.log("client.load responded with " + (err ? "no" : "a") + " sketch");
-
       if (!err) {
         req.sketch = sketch;
       }
@@ -42,29 +36,49 @@ app.get('/', function (req, res) {
   render(sketch, res);
 });
 
-app.post('/save/:id?', function (req, res, next) {
-  var sketch = req.sketch || new client.Sketch();
-  var revision = new client.Revision();
+/**
+ * Saves a new revision of a sketch. There are 3 general scenario here:
+ * 
+ * 1. This is the first time a sketch has been saved. A sketch needs to be created, and a new revision added.
+ * 2. This is an update of a sketch. The sketch needs to be loaded, and a new revision added.
+ * 3. This should be a fork of a sketch. A new sketch needs to be created and a new revision added.
+ */
+app.post('/save', function (req, res, next) {
+  function withSketch(sketch) {
+    var revision = new client.Revision();
 
-  // Handle 404 on the sketch ID
-  if (typeof req.params.sketch === "string" && req.params.sketch !== sketch.id) {
-    return next();
+    revision.update(req.body);
+    sketch.revisions.add(revision);
+
+    client.save(sketch, function (err) {
+      if (!err) {
+        res.redirect('/' + sketch.id + '/' + revision.id);
+      }
+    });
   }
 
-  revision.update(req.body);
-  sketch.revisions.add(revision);
+  // This first case handles (2); e.g. the loading of an existing sketch and addition of a new revision
+  if (typeof req.body.id === "string" && req.body.id.length > 0 && req.body.save === "update") {
+    client.load(req.body.id, function (err, sketch) {
+      if (!err) {
+        withSketch(sketch);
+      } else {
+        next();
+      }
+    });
 
-  client.save(sketch, function (err) {
-    if (!err) {
-      res.redirect('/' + sketch.id + '/' + revision.id);
-    }
-  });
+  // In all other situations, we want to add a revision to a newly created sketch
+  } else {
+    withSketch(new client.Sketch());
+  }
 });
 
 app.post('/render', function (req, res) {
   var sketch = new client.Sketch();
+  var revision = new client.Revision();
   
-  sketch.revisions.add(new client.Revision(req.body));
+  revision.update(req.body);
+  sketch.revisions.add(revision);
 
   res.render('render.ejs', {
     sketch: sketch,
