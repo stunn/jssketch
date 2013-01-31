@@ -2,7 +2,7 @@
   "editor": [
     "css/normalize.css",
     "css/jquery-ui.css",
-    "codemirror/codemirror.css",
+    "codemirror/lib/codemirror.css",
     "codemirror/theme/neat.css",
     "css/bootstrap.css",
     "css/main.less"
