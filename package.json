@@ -1,9 +1,10 @@
 {
-  "name": "jssketch-web",
-  "description": "jssketch server",
+  "name": "jssketch-fe",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "jssketch-be": "git://github.com/mattlunn/jssketch-be.git",
+    "utils": "git://github.com/mattlunn/node-util.git",
     "express": "3.0.6",
     "ejs": "0.8.3"
   }

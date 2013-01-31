@@ -1,4 +1,4 @@
-var utils = require('./utils');
+var utils = require('utils');
 var config = utils.readJsonFileSync(__dirname + '/config/config.json');
 var defaults = {
   base: '127.0.0.1',

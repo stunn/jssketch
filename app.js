@@ -1,5 +1,5 @@
-var jssketch = require('./vendor/jssketch');
 var config = require('./config');
+var jssketch = require('jssketch-be');
 var express = require('express');
 
 var app = express();
