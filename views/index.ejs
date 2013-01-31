@@ -6,8 +6,12 @@
     <%
 
     function prefix(host, port) {
-      return function () {
-        return 'http://' + host + (port === 80 ? '' : (':' + port)) + '/';
+      return function (path) {
+        if (path[0] === "/" || /^https?:\/\//.test(path)) {
+          return path;
+        }
+
+        return 'http://' + host + (port === 80 ? '' : (':' + port)) + '/' + path;
       }
     }
 
@@ -18,28 +22,10 @@
 
     <title>jsSketch | <%= (typeof sketch.id === "undefined" ? 'Home' : (sketch.id + ' v' + revision.id)) %></title>
 
-    <link rel="stylesheet" href="<%- base() %>css/normalize.css" >
-    <link rel="stylesheet" href="<%- base() %>css/jquery-ui.css" >
-    <link rel="stylesheet" href="<%- base() %>codemirror/codemirror.css">
-    <link rel="stylesheet" href="<%- base() %>codemirror/theme/neat.css">
-    <link rel="stylesheet" href="<%- base() %>css/bootstrap.css">
-    <link rel="stylesheet/less" type="text/css" href="<%- base() %>css/main.less" >
-
-    <script src="<%- base() %>js/application.js"></script>
-    <script src="<%- base() %>js/less.js"></script>
-    <script src="<%- base() %>js/jquery.js"></script>
-    <script src="<%- base() %>js/jquery-ui.js"></script>
-    <script src="<%- base() %>js/bootstrap.js"></script>
-    <script src="<%- base() %>codemirror/codemirror.js"></script>
-    <script src="<%- base() %>codemirror/mode/javascript/javascript.js"></script>
-    <script src="<%- base() %>codemirror/mode/css/css.js"></script>
-    <script src="<%- base() %>codemirror/mode/xml/xml.js"></script>
-    <script src="<%- base() %>js/sexify.js"></script>
-    <script src="<%- base() %>js/panes.js"></script>
-    <script src="<%- base() %>js/main.js"></script>
+    <% include assets %>
   </head>
   <body>
-    <form id="the-form" method="post" data-save-url="<%- base() %>save" data-preview-url="<%- jail() %>preview">
+    <form id="the-form" method="post" data-save-url="<%- base('save') %>" data-preview-url="<%- jail('preview') %>">
       <input type="hidden" name="id" value="<%= (typeof sketch.id === 'undefined' ? '' : sketch.id) %>" />
 
       <div id="nav">
@@ -127,7 +113,7 @@
               </header>
               <div class="body">
                 <div class="shield"></div>
-                <iframe id="render" <%- (typeof sketch.id === "undefined" ? '' : ('src="' + jail() + 'preview/' + sketch.id + '/' + revision.id + '"')) %> />
+                <iframe id="render" <%- (typeof sketch.id === "undefined" ? '' : ('src="' + jail('preview/' + sketch.id + '/' + revision.id + '"'))) %> />
               </div>
             </div>
           </section> 

@@ -6,6 +6,9 @@
     "jssketch-be": "git://github.com/mattlunn/jssketch-be.git",
     "utils": "git://github.com/mattlunn/node-util.git",
     "express": "3.0.6",
-    "ejs": "0.8.3"
-  }
+    "ejs": "0.8.3",
+    "commander": "1.1.1",
+    "matts-minifier": "git://github.com/mattlunn/matts-minifier.git#5ced9ad522200ac1da9968b49b095ea83582e13c"
+  },
+  "bin": "./bin/jssketch"
 }

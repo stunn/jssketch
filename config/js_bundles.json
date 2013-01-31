@@ -1,0 +1,16 @@
+{
+  "editor": [
+    "js/application.js",
+    "js/less.js",
+    "js/jquery.js",
+    "js/jquery-ui.js",
+    "js/bootstrap.js",
+    "codemirror/codemirror.js",
+    "codemirror/mode/javascript/javascript.js",
+    "codemirror/mode/css/css.js",
+    "codemirror/mode/xml/xml.js",
+    "js/sexify.js",
+    "js/panes.js",
+    "js/main.js"
+  ]
+}

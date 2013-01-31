@@ -1,0 +1,25 @@
+<%- 
+
+stylesheets.map(function (stylesheet) {
+  var rel = "";
+
+  switch (stylesheet.slice(stylesheet.lastIndexOf("."))) {
+    case ".css":
+      rel = "stylesheet";
+    break;
+    case ".less":
+      rel = "stylesheet/less";
+    break;
+  }
+
+  return "<link " + (rel ? ("rel=\"" + rel + "\" ") : "") + "href=\"" + base(stylesheet) + "\"/>";
+}).join("\n")
+
+%>
+<%-
+
+scripts.map(function (script) {
+  return "<script src=\"" + base(script) + "\"><\/script>";
+}).join("\n")
+
+%>
