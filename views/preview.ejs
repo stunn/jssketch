@@ -5,17 +5,17 @@
 
     return str.replace(/\n/g, '\n' + spaces);
   }
-%>
+-%>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<% if (revision.css.length) { %>
+<% if (revision.css.length) { -%>
 
     <style>
       <%- pad(revision.css, 6) %>
     </style>
-<% } %>
-<% if (revision.javascript.length) { %>
+<% } -%>
+<% if (revision.javascript.length) { -%>
 
     <script>
       <%- pad(revision.javascript, 6) %>
