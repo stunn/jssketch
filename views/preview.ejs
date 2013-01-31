@@ -1,21 +1,28 @@
 <%- doctypes[revision.doctype].doctype %>
+<%
+  function pad(str, len) {
+    var spaces = (new Array(len + 1)).join(' ');
+
+    return str.replace(/\n/g, '\n' + spaces);
+  }
+%>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <% if (revision.css.length) { %>
 
     <style>
-      <%- revision.css %>
+      <%- pad(revision.css, 6) %>
     </style>
 <% } %>
 <% if (revision.javascript.length) { %>
 
     <script>
-      <%- revision.javascript %>
+      <%- pad(revision.javascript, 6) %>
     </script>
 <% } %>
   </head>
   <body>
-    <%- revision.html %>
+    <%- pad(revision.html, 4) %>
   </body>
 </html>
