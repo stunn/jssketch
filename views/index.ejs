@@ -28,6 +28,9 @@
     <form id="the-form" method="post" data-save-url="<%- base('save') %>" data-preview-url="<%- jail('preview') %>">
       <input type="hidden" name="id" value="<%= (typeof sketch.id === 'undefined' ? '' : sketch.id) %>" />
 
+      <input type="hidden" name="js_assets" value="<%= JSON.stringify([{type: "js", parent:{type:"js",library:2,id:"1"},library:1,id:"1"},{parent:null,type:"js",library:2,id:"1"}]) %>" />
+      <input type="hidden" name="css_assets" value="<%= JSON.stringify([{parent:null,type:"css",library:1,id:"2"},{parent:{type:"js",library:2,id:"1"},library:2,type:"css",id:"1"}]) %>" />
+
       <div id="nav">
         <h1>jssketch</h1>
 
@@ -36,7 +39,7 @@
           <button class="btn btn-inverse btn-mini" name="save" type="submit" value="update"><i class="icon-white icon-briefcase"></i></button>
 
           <% if (sketch.id) { %>
-            <button class="btn btn-inverse btn-mini" name="save" type="submit" value="fork"><i class="icon-white icon-random"></i></button>          
+            <button class="btn btn-inverse btn-mini" name="save" type="submit" value="fork"><i class="icon-white icon-random"></i></button>
           <% } %>
         </nav>
       </div>
@@ -58,7 +61,7 @@
 
                 <div class="btn-group">
                   <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
-                </div>              
+                </div>
 
               </header>
               <div class="body">
@@ -83,7 +86,7 @@
 
                 <div class="btn-group">
                   <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
-                </div>  
+                </div>
               </header>
               <div class="body">
                 <textarea class="codemirror" name="html" data-mode="xml"><%= revision.html %></textarea>
@@ -97,13 +100,13 @@
 
                 <div class="btn-group">
                   <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
-                </div>                
+                </div>
               </header>
               <div class="body">
                 <textarea class="codemirror" name="css" data-mode="text/css"><%= revision.css %></textarea>
               </div>
             </div>
-          </section>            
+          </section>
         </div>
         <div class="pane right" id="right-pane">
           <section id="preview" class="panel">
@@ -116,7 +119,7 @@
                 <iframe id="render" <%- (typeof sketch.id === "undefined" ? '' : ('src="' + jail('preview/' + sketch.id + '/' + revision.id + '"'))) %> />
               </div>
             </div>
-          </section> 
+          </section>
         </div>
       </div>
     </form>
