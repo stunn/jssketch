@@ -8,7 +8,7 @@
     "express": "3.0.6",
     "ejs": "0.8.3",
     "commander": "1.1.1",
-    "matts-minifier": "git://github.com/mattlunn/matts-minifier.git#5ced9ad522200ac1da9968b49b095ea83582e13c"
+    "matts-minifier": "git://github.com/mattlunn/mini-fier.git#5ced9ad522200ac1da9968b49b095ea83582e13c"
   },
   "bin": "./bin/jssketch"
 }
