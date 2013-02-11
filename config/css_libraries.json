@@ -1,0 +1,43 @@
+[{
+  "id": 1,
+  "name": "normalize",
+  "defaultVersion": "1",
+  "versions": [{
+    "id": "1",
+    "name": "2.1.0",
+    "url": "http://necolas.github.com/normalize.css/2.1.0/normalize.css",
+    "dependencies": []
+  }, {
+    "id": "2",
+    "name": "1.1.0",
+    "url": "http://necolas.github.com/normalize.css/1.1.0/normalize.css",
+    "dependencies": []
+  }]
+}, {
+  "id": 2,
+  "name": "jQuery UI",
+  "defaultVersion": "1",
+  "versions": [{
+    "id": "1",
+    "name": "1.9.2",
+    "url": "http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css",
+    "dependencies": [{
+      "type": "js",
+      "library": 2,
+      "minVersion": "1",
+      "maxVersion": "1",
+      "required": false
+    }]
+  }, {
+    "id": "2",
+    "name": "1.8.2",
+    "url": "http://code.jquery.com/ui/1.8.2/themes/base/jquery-ui.css",
+    "dependencies": [{
+      "type": "js",
+      "library": 2,
+      "minVersion": "2",
+      "maxVersion": "2",
+      "required": false
+    }]
+  }]
+}]
