@@ -119,31 +119,6 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
   }
 
   /**
-   * Returns a Version Model for the specified type, library & id, or false if
-   * non exists.
-   *
-   * @param type: The type the library is from (e.g. "css" or "js").
-   * @param library: The id of the library
-   * @param id: The id of the version.
-   * @return Version model or false if not found.
-   */
-  DependencyManager.prototype.find = function (type, library, id) {
-    var types = this._libraries;
-
-    if (types.hasOwnProperty(type) && types[type].hasOwnProperty(library)) {
-      var versions = types[type][library].versions;
-
-      for (var i=0;i<versions.length;i++) {
-        if (versions[i].id === id) {
-          return versions[i];
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
    * Creates a user-Version (e.g. a Version model for a user-specified CSS/JS asset)
    *
    * The returned Version has its ID and URL set to the URL provided, and it's name
@@ -154,7 +129,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
    * @param: id: The URL of the asset they're including
    * @return Version instance.
    */
-  DependencyManager.prototype.create = function (id) {
+  DependencyManager.prototype.createVersion = function (id) {
     if (typeof id === "string" && /^http(s)?:\/\/\S+$/.test(id)) {
       return new Version({
         id: id,
@@ -172,6 +147,60 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
     }
 
     return false;
+  }
+
+  /**
+   * Returns an array of libraries which are of the given type
+   *
+   * @param type: The type of libraries you want
+   * @return An array of types. If type is invalid, an empty array is returned.
+   */
+  DependencyManager.prototype.getLibraries = function (type) {
+    if (this._libraries.hasOwnProperty(type)) {
+      return Object.keys(this._libraries[type]).map(function (key) {
+        return this[key];
+      }, this._libraries[type]);
+    }
+
+    return [];
+  }
+
+  /**
+   * Returns the library of the type give, with the ID provided.
+   *
+   * @param type The type the library is (CSS/JS etc).
+   * @param id The id of the library
+   * @return The library, or undefined if non existed
+   */
+  DependencyManager.prototype.getLibrary = function (type, id) {
+    var type = this._libraries[type];
+
+    if (typeof type === "object" && type.hasOwnProperty(id)) {
+      return type[id];
+    }
+  }
+
+  /**
+   * Returns a Version Model for the specified type, library & id, or undefined if
+   * non exists.
+   *
+   * @param type: The type the library is from (e.g. "css" or "js").
+   * @param library: The id of the library
+   * @param id: The id of the version.
+   * @return Version model or undefined if not found.
+   */
+  DependencyManager.prototype.getLibraryVersion = function (type, library, id) {
+    var types = this._libraries;
+
+    if (types.hasOwnProperty(type) && types[type].hasOwnProperty(library)) {
+      var versions = types[type][library].versions;
+
+      for (var i=0;i<versions.length;i++) {
+        if (versions[i].id === id) {
+          return versions[i];
+        }
+      }
+    }
   }
 
   return {
