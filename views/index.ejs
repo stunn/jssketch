@@ -23,6 +23,15 @@
     <title>jsSketch | <%= (typeof sketch.id === "undefined" ? 'Home' : (sketch.id + ' v' + revision.id)) %></title>
 
     <% include assets %>
+
+    <script data-main="/js/dep.js" src="/js/require.js"></script>
+
+    <script>
+      var App = {
+        css: <%- JSON.stringify(css) %>,
+        js: <%- JSON.stringify(js) %>
+      };
+    </script>
   </head>
   <body>
     <form id="the-form" method="post" data-save-url="<%- base('save') %>" data-preview-url="<%- jail('preview') %>">

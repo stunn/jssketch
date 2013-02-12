@@ -1,72 +1,74 @@
-/**
- * As a shortcut, "prefs" can be the object we want to collect, as well as
- * the normal options object.
- */
-function Collection(prefs) {
-  switch (typeof prefs) {
-    case "function":
-      this._type = prefs;
-      break;
-    case "object":
-      if (prefs !== "null") {
-        this._type = prefs.type; // or undefined
-        this._validator = prefs.validator;
-
+define(function ()  {
+  /**
+   * As a shortcut, "prefs" can be the object we want to collect, as well as
+   * the normal options object.
+   */
+  function Collection(prefs) {
+    switch (typeof prefs) {
+      case "function":
+        this._type = prefs;
         break;
+      case "object":
+        if (prefs !== "null") {
+          this._type = prefs.type; // or undefined
+          this._validator = prefs.validator;
+
+          break;
+        }
+      default:
+        throw new Error('Collection must be passed either a settings object or a Constructor');
+    }
+
+    if (typeof this._validator !== "function") {
+      this._validator = function () {
+        return true;
+      };
+    }
+
+    this.length = 0;
+  }
+
+  Collection.prototype.add = function (instance) {
+    if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
+      throw new TypeError("Cannot add element to collection; it does not validate");
+    }
+
+    // Otherwise we're good.
+    this[this.length++] = instance;
+    return this.length;
+  };
+
+  Collection.prototype.remove = function (el) {
+    if (typeof el === "number") {
+      return Array.prototype.splice.call(this, i, 0)[0];
+    } else {
+      for (var i=0;i<this.length;i++) {
+        if (this[i] === el) {
+          return this.remove(i);
+        }
       }
-    default:
-      throw new Error('Collection must be passed either a settings object or a Constructor');
-  }
+    }
+  };
 
-  if (typeof this._validator !== "function") {
-    this._validator = function () {
-      return true;
-    };
-  }
+  Collection.prototype.id = function (id) {
+    // This is a shortcut for probably the most common form of ID
+    if (typeof id === "number" && id - 1 < this.length && this[id - 1].id === id) {
+      return this[id - 1];
+    }
 
-  this.length = 0;
-}
-
-Collection.prototype.add = function (instance) {
-  if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
-    throw new TypeError("Cannot add element to collection; it does not validate");
-  }
-
-  // Otherwise we're good.
-  this[this.length++] = instance;
-  return this.length;
-};
-
-Collection.prototype.remove = function (el) {
-  if (typeof el === "number") {
-    return Array.prototype.splice.call(this, i, 0)[0];
-  } else {
+    // Otherwise lets enumerate over each element
     for (var i=0;i<this.length;i++) {
-      if (this[i] === el) {
-        return this.remove(i);
+      if (this[i].id === id) {
+        return this[i];
       }
     }
-  }
-};
 
-Collection.prototype.id = function (id) {
-  // This is a shortcut for probably the most common form of ID
-  if (typeof id === "number" && id - 1 < this.length && this[id - 1].id === id) {
-    return this[id - 1];
-  }
+    return null;
+  };
 
-  // Otherwise lets enumerate over each element
-  for (var i=0;i<this.length;i++) {
-    if (this[i].id === id) {
-      return this[i];
-    }
-  }
+  ["forEach", "every", "some", "reduce", "reduceRight", "filter", "map"].forEach(function (func) {
+    Collection.prototype[func] = Array.prototype[func];
+  });
 
-  return null;
-};
-
-["forEach", "every", "some", "reduce", "reduceRight", "filter", "map"].forEach(function (func) {
-  Collection.prototype[func] = Array.prototype[func];
+  return Collection;
 });
-
-module.exports = Collection;
