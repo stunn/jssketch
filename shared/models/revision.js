@@ -31,11 +31,13 @@ define(['models/model', 'models/asset'], function (Model, Asset) {
             required: true,
             fallback: "1",
             validator: function (val) {
-              if (!doctypes.hasOwnProperty(val)) {
-                return "Invalid doctype provided";
+              if (doctypes.some(function (doctype) {
+                return doctype.id === val;
+              })) {
+                return true;
               }
 
-              return true;
+              return "Doctype does not exist";
             }
           }
         },
