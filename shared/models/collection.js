@@ -28,7 +28,9 @@ define(function ()  {
     this.length = 0;
   }
 
-  Collection.prototype.add = function (instance) {
+  Collection.prototype = new Array;
+
+  Collection.prototype.add = Collection.prototype.push = function (instance) {
     if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
       throw new TypeError("Cannot add element to collection; it does not validate");
     }
@@ -40,7 +42,7 @@ define(function ()  {
 
   Collection.prototype.remove = function (el) {
     if (typeof el === "number") {
-      return Array.prototype.splice.call(this, i, 0)[0];
+      return this.splice.call(this, i, 0)[0];
     } else {
       for (var i=0;i<this.length;i++) {
         if (this[i] === el) {
@@ -65,10 +67,6 @@ define(function ()  {
 
     return null;
   };
-
-  ["forEach", "every", "some", "reduce", "reduceRight", "filter", "map"].forEach(function (func) {
-    Collection.prototype[func] = Array.prototype[func];
-  });
 
   return Collection;
 });

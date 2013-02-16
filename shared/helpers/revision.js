@@ -1,53 +1,23 @@
-var Revision = require('./broker').load('models/revision');
-var Asset = require('./broker').load('models/asset');
-
-var utils = require('utils');
-
-module.exports = function (client) {
+define(['models/asset'], function (Asset) {
   return {
-    loadAndVerifyRevisionFromUrl: function (req, _, next) {
-      var sketchId = req.params.id;
-      var revisionId = req.params.rev;
-
-      // Check that the rev and the id are actual sketch ID's and revision ID's...
-      // otherwise bail to another handler.
-      if (sketchId.length !== 5 || !/^[0-9]+$/.test(revisionId)) {
-        return next('route');
-      } else {
-        revisionId = +revisionId;
-
-        client.loadRevision(revisionId, sketchId, function (err, revision, sketch) {
-          if (err) {
-            next('route');
-          } else {
-            req.sketch = sketch;
-            req.revision = revision;
-
-            next();
-          }
-        });
-      }
-    },
-
-    createAndValidateRevisionFromPostData: function (req, res, next) {
-      var revision = req.revision || new Revision();
-
+    updateRevisionFromHash: function (revision, doctypes, dm, hash, error) {
       var assetTypes = ["css", "js"];
       var assetKeys = assetTypes.map(function (type) {
         return type + "_assets";
       });
 
-      function error(reason) {
-        console.log(reason);
-        next('route');
+      if (typeof error !== "function") {
+        error = function (reason) {
+          console.log(reason);
 
-        return false;
+          return false;
+        };
       }
 
-      revision.update(req.body);
+      revision.update(hash);
 
       // If what we've got so far is valid, move onto checking the assets.
-      if (revision.validate() !== true || !client.doctypes.some(function (doctype) {
+      if (revision.validate() !== true || !doctypes.some(function (doctype) {
         return doctype.id === revision.doctype;
       })) {
         return error('Revision did not validate');
@@ -61,7 +31,7 @@ module.exports = function (client) {
         var array;
 
         try {
-          req.body[key] = array = JSON.parse(req.body[key]);
+          hash[key] = array = JSON.parse(hash[key]);
         } catch (e) {}
 
         // Check that the input is actually an array we can iterate over.
@@ -83,8 +53,10 @@ module.exports = function (client) {
         var type = assetTypes[i];
         var key = assetKeys[i];
 
-        var collection = revision[utils.camelize(key)];
-        var assetsOfType = req.body[key];
+        var collection = revision[key.replace(/_([a-z])/g, function (_, c) {
+          return c.toUpperCase();
+        })];
+        var assetsOfType = hash[key];
 
         for (var j=0;j<assetsOfType.length;j++) {
           var assetRep = assetsOfType[j];
@@ -103,7 +75,7 @@ module.exports = function (client) {
                 }
 
                 // Check the parent is included in the sketch.
-                if (!req.body[parent.type + "_assets"].some(function (assetRep) {
+                if (!hash[parent.type + "_assets"].some(function (assetRep) {
                   return assetRep.library === parent.library && assetRep.id === parent.id;
                 })) {
                   return error('Asset references a parent which is not present in the revision');
@@ -111,15 +83,15 @@ module.exports = function (client) {
 
                 // dm.getLibraryVersion returns a Version or false. If it's false, it'll be picked
                 // up by the validate() function.
-                asset.parent = client.dm.getLibraryVersion(parent.type, parent.library, parent.id);
+                asset.parent = dm.getLibraryVersion(parent.type, parent.library, parent.id);
               }
 
-              asset.version = client.dm.getLibraryVersion(type, assetRep.library, assetRep.id);
+              asset.version = dm.getLibraryVersion(type, assetRep.library, assetRep.id);
             break;
             case "user":
               // DM does all the hard work of validating ID. It'll return false if
               // invalid, which'll be picked up by validate() later.
-              asset.version = client.dm.createVersion(assetRep.id);
+              asset.version = dm.createVersion(assetRep.id);
             break;
             default:
               return error('Asset was of the wrong type (' + assetRep.type + ' in ' + key + ')');
@@ -133,10 +105,6 @@ module.exports = function (client) {
           }
         }
       }
-
-      req.revision = revision;
-
-      next();
     }
   };
-};
+});

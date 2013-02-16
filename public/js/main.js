@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
   // Setup the left/ right vertical pane
   $('#main').panes("x");
 
-  // Resizable (therefore in turn panes) turns our nice %ages into pixels... which 
+  // Resizable (therefore in turn panes) turns our nice %ages into pixels... which
   // is so useful when the browser resizes, you won't believe. This changes these back
   // into %ages. Ideally I wanted to "fix" this behaviour in panes, so the resulting
   // height & width would be in the same unit the starting height & width were; however,
@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
     });
 
     mirror.setSize('100%', '100%');
-    
+
     $(this).data('mirror', mirror);
   });
 

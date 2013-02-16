@@ -4,16 +4,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     {{#each revision.cssAssets}}<link rel="stylesheet" href="{{this.version.url}}" />
-    {{/each}}
-    {{#if revision.css}}<style>
+    {{/each}}{{#if revision.css}}<style>
       {{{pad revision.css 6}}}
-    </style>{{/if}}
-
+    </style>
+    {{/if}}
     {{#each revision.jsAssets}}<script src="{{this.version.url}}"></script>
-    {{/each}}
-    {{#if revision.javascript}}<script>
+    {{/each}}{{#if revision.javascript}}<script>
       {{{pad revision.javascript 6}}}
-    </script>{{/if}}
+    </script>
+    {{/if}}
   </head>
   <body>
     {{{pad revision.html 4}}}
