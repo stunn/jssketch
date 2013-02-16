@@ -3,42 +3,35 @@
   <head>
     <meta charset="utf-8">
 
-    <%
+    <title>jsSketch | {{#if sketch.id}}{{sketch.id}} v{{revision.id}} {{else}}Home{{/if}}</title>
 
-    function prefix(host, port) {
-      return function (path) {
-        if (path[0] === "/" || /^https?:\/\//.test(path)) {
-          return path;
-        }
+    {{#each stylesheets}}
+    <link rel="{{rel this}}" href="{{base this ../settings}}" />
+    {{/each}}
 
-        return 'http://' + host + (port === 80 ? '' : (':' + port)) + '/' + path;
-      }
-    }
-
-    var jail = prefix(config.jail, config.port);
-    var base = prefix(config.base, config.port);
-
-    %>
-
-    <title>jsSketch | <%= (typeof sketch.id === "undefined" ? 'Home' : (sketch.id + ' v' + revision.id)) %></title>
-
-    <% include assets %>
-
+    {{#each scripts}}
+    <script src="{{base this ../settings}}"></script>
+    {{/each}}
     <script data-main="/js/dep.js" src="/js/require.js"></script>
 
     <script>
       var App = {
-        css: <%- JSON.stringify(css) %>,
-        js: <%- JSON.stringify(js) %>
+        css: {{jsonify css}},
+        js: {{jsonify js}},
+        doctypes: {{jsonify doctypes}}
       };
+    </script>
+
+    <script id="source-template" type="text/x-handlebars-template">
+      {{> preview}}
     </script>
   </head>
   <body>
-    <form id="the-form" method="post" data-save-url="<%- base('save') %>" data-preview-url="<%- jail('preview') %>">
-      <input type="hidden" name="id" value="<%= (typeof sketch.id === 'undefined' ? '' : sketch.id) %>" />
+    <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
+      <input type="hidden" name="id" value="{{#if sketch.id}}{{sketch.id}}{{/if}}" />
 
-      <input type="hidden" name="js_assets" value="<%= JSON.stringify([{type: "js", parent:{type:"js",library:2,id:"1"},library:1,id:"1"},{parent:null,type:"js",library:2,id:"1"}]) %>" />
-      <input type="hidden" name="css_assets" value="<%= JSON.stringify([{parent:null,type:"css",library:1,id:"2"},{parent:{type:"js",library:2,id:"1"},library:2,type:"css",id:"1"}]) %>" />
+      <input type="hidden" name="js_assets" value="[{&quot;type&quot;:&quot;js&quot;,&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:1,&quot;id&quot;:&quot;1&quot;},{&quot;parent&quot;:null,&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;}]" />
+      <input type="hidden" name="css_assets" value="[{&quot;parent&quot;:null,&quot;type&quot;:&quot;css&quot;,&quot;library&quot;:1,&quot;id&quot;:&quot;2&quot;},{&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:2,&quot;type&quot;:&quot;css&quot;,&quot;id&quot;:&quot;1&quot;}]" />
 
       <div id="nav">
         <h1>jssketch</h1>
@@ -47,9 +40,9 @@
           <button class="btn btn-inverse btn-mini" name="preview" type="submit"><i class="icon-white icon-play"></i></button>
           <button class="btn btn-inverse btn-mini" name="save" type="submit" value="update"><i class="icon-white icon-briefcase"></i></button>
 
-          <% if (sketch.id) { %>
+          {{#if sketch.id}}
             <button class="btn btn-inverse btn-mini" name="save" type="submit" value="fork"><i class="icon-white icon-random"></i></button>
-          <% } %>
+          {{/if}}
         </nav>
       </div>
       <div id="main">
@@ -74,7 +67,7 @@
 
               </header>
               <div class="body">
-                <textarea class="codemirror" name="javascript" data-mode="javascript"><%= revision.javascript %></textarea>
+                <textarea class="codemirror" name="javascript" data-mode="javascript">{{revision.javascript}}</textarea>
               </div>
             </div>
           </section>
@@ -88,9 +81,9 @@
                 </label>
 
                 <select name="doctype" class="sexy-select">
-                <% for (var x in doctypes) { %>
-                  <option value="<%= x %>" <%= revision.doctype === x ? "selected" : "" %>><%= doctypes[x].description %></option>
-                <% } %>
+                {{#each doctypes}}
+                  <option value="{{this.id}}">{{this.description}}</option>
+                {{/each}}
                 </select>
 
                 <div class="btn-group">
@@ -98,7 +91,7 @@
                 </div>
               </header>
               <div class="body">
-                <textarea class="codemirror" name="html" data-mode="xml"><%= revision.html %></textarea>
+                <textarea class="codemirror" name="html" data-mode="xml">{{revision.html}}</textarea>
               </div>
             </div>
           </section>
@@ -112,7 +105,7 @@
                 </div>
               </header>
               <div class="body">
-                <textarea class="codemirror" name="css" data-mode="text/css"><%= revision.css %></textarea>
+                <textarea class="codemirror" name="css" data-mode="text/css">{{revision.css}}</textarea>
               </div>
             </div>
           </section>
@@ -125,7 +118,17 @@
               </header>
               <div class="body">
                 <div class="shield"></div>
-                <iframe id="render" <%- (typeof sketch.id === "undefined" ? '' : ('src="' + jail('preview/' + sketch.id + '/' + revision.id + '"'))) %> />
+                <iframe id="render" {{#if sketch.id}}src="{{jail "preview" sketch.id revision.id}}"{{/if}}></iframe>
+              </div>
+            </div>
+          </section>
+          <section id="source" class="panel">
+            <div class="container">
+              <header>
+                <h1>SOURCE VIEWER</h1>
+              </header>
+              <div class="body">
+                <textarea class="codemirror" data-mode="xml"></textarea>
               </div>
             </div>
           </section>

@@ -23,7 +23,10 @@ var defaults = {
     width: 35,
     windows: [{
       id: 'preview',
-      height: 100
+      height: 60
+    }, {
+      id: 'source',
+      height: 40
     }]
   }]
 };

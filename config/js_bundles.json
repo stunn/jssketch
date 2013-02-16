@@ -5,6 +5,7 @@
     "js/jquery.js",
     "js/jquery-ui.js",
     "js/bootstrap.js",
+    "js/handlebars.js",
     "codemirror/lib/codemirror.js",
     "codemirror/mode/javascript/javascript.js",
     "codemirror/mode/css/css.js",
