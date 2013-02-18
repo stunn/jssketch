@@ -3,6 +3,10 @@ function MemoryStorage() {
   this._ajax = {};
 };
 
+MemoryStorage.prototype._loadRevisionData = function (sketchId, revisionId) {
+  return (this._revisions[sketchId] || [])[revisionId - 1];
+};
+
 MemoryStorage.prototype.saveSketch = function (sketch, callback, generator) {
   if (typeof sketch.id === "undefined") {
     while (true) {
@@ -31,25 +35,26 @@ MemoryStorage.prototype.getSketch = function (id, callback) {
   }
 };
 
-MemoryStorage.prototype.addRevisionToSketch = function (revision, cssAssets, jsAssets, ajax, sketchId, callback) {
-  var id = this._revisions[sketchId].push(JSON.stringify({
-    revision: revision,
-    cssAssets: cssAssets,
-    jsAssets: jsAssets,
-    ajax: ajax
-  }));
+MemoryStorage.prototype.addRevisionToSketch = function (revision, cssAssets, jsAssets, sketchId, callback) {
+  var id = this._revisions[sketchId].push({
+    revision: JSON.stringify({
+      revision: revision,
+      cssAssets: cssAssets,
+      jsAssets: jsAssets
+    })
+  });
 
   callback(null, id);
 };
 
 MemoryStorage.prototype.getRevision = function (revisionId, sketchId, callback) {
-  var revision = (this._revisions[sketchId] || [])[revisionId - 1];
+  var revision = this._loadRevisionData(sketchId, revisionId);
 
   if (revision) {
-    revision = JSON.parse(revision);
+    revision = JSON.parse(revision.revision);
     revision.revision.id = revisionId;
 
-    callback(null, revision.revision, revision.cssAssets, revision.jsAssets, revision.ajax, sketchId);
+    callback(null, revision.revision, revision.cssAssets, revision.jsAssets, sketchId);
   } else {
     callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
   }
@@ -75,6 +80,27 @@ MemoryStorage.prototype.getAjax = function (id, callback) {
     callback(null, JSON.parse(this._ajax[id]));
   } else {
     callback(new Error('No Ajax model with ID of ' + id + ' exists'));
+  }
+};
+
+MemoryStorage.prototype.getAjaxForRevision = function (sketchId, revisionId, callback) {
+  var revision = this._loadRevisionData(sketchId, revisionId);
+
+  if (revision) {
+    callback(null, JSON.parse(revision.ajax));
+  } else {
+    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
+  }
+};
+
+MemoryStorage.prototype.saveAjaxForRevision = function (sketchId, revisionId, ajaxRequests, callback) {
+  var revision = this._loadRevisionData(sketchId, revisionId);
+
+  if (revision) {
+    revision.ajax = JSON.stringify(ajaxRequests);
+    callback(null);
+  } else {
+    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
   }
 };
 
