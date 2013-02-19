@@ -1,4 +1,4 @@
-jssketch-fe
+jssketch-fe [![Build Status](https://travis-ci.org/mattlunn/jssketch-fe.png?branch=master)](https://travis-ci.org/mattlunn/jssketch-fe)
 ===========
 
 Getting Started (Dev on the FE)
