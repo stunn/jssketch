@@ -14,18 +14,19 @@ define(['models/asset'], function (Asset) {
         };
       }
 
-      revision.update(hash);
+      revision.set(hash);
 
       // If what we've got so far is valid, move onto checking the assets.
       if (revision.validate() !== true || !doctypes.some(function (doctype) {
-        return doctype.id === revision.doctype;
+        return doctype.id === revision.get('doctype');
       })) {
         return error('Revision did not validate');
       }
 
       // We need to validate that each asset list is an array of objects first,
-      // as inter-type dependancy checking can hit all lists. We can therefore re-validate
-      // the list every time we hit it, or validate first and then access without checking.
+      // as inter-type dependancy checking can hit all lists. We can therefore
+      // re-validate the list every time we hit it, or validate first and then
+      // access without checking.
       for (var i=0;i<assetKeys.length;i++) {
         var key = assetKeys[i];
         var array;
@@ -83,15 +84,15 @@ define(['models/asset'], function (Asset) {
 
                 // dm.getLibraryVersion returns a Version or false. If it's false, it'll be picked
                 // up by the validate() function.
-                asset.parent = dm.getLibraryVersion(parent.type, parent.library, parent.id);
+                asset.set('parent', dm.getLibraryVersion(parent.type, parent.library, parent.id));
               }
 
-              asset.version = dm.getLibraryVersion(type, assetRep.library, assetRep.id);
+              asset.set('version', dm.getLibraryVersion(type, assetRep.library, assetRep.id));
             break;
             case "user":
               // DM does all the hard work of validating ID. It'll return false if
               // invalid, which'll be picked up by validate() later.
-              asset.version = dm.createVersion(assetRep.id);
+              asset.set('version', dm.createVersion(assetRep.id));
             break;
             default:
               return error('Asset was of the wrong type (' + assetRep.type + ' in ' + key + ')');

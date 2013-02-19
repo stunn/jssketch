@@ -36,31 +36,31 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
       types[type].forEach(function (libraryRep) {
         var library = new Library(libraryRep);
 
-        library.type = type;
+        library.set('type', type);
 
-        if (libraries.hasOwnProperty(library.id)) {
-          throw new Error(type + ' already contains a library with ID ' + library.id);
+        if (libraries.hasOwnProperty(library.get('id'))) {
+          throw new Error(type + ' already contains a library with ID ' + library.get('id'));
         } else {
-          libraries[library.id] = library;
+          libraries[library.get('id')] = library;
         }
 
         // Now we setup the versions.
         libraryRep.versions.forEach(function (versionRep) {
           var version = new Version(versionRep);
 
-          version.library = library;
+          version.set('library', library);
 
           library.versions.add(version);
 
           // Set this version as the defaultVersion of the library if the IDs match
-          if (libraryRep.defaultVersion === version.id) {
-            library.defaultVersion = version;
+          if (libraryRep.defaultVersion === version.get('id')) {
+            library.set('defaultVersion', version);
           }
         });
 
         // If we get this far and there is no defaultVersion set, the defaultVersion
         // points to a non-existent ID in the config; throw an error.
-        if (!library.defaultVersion) {
+        if (!library.get('defaultVersion')) {
           throw new Error(library.name + ' does not have a defaultVersion specified');
         }
       });
@@ -90,7 +90,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
             }
 
             library.versions.reduce(function (prev, curr, i, arr) {
-              if (curr.id === min) {
+              if (curr.get('id') === min) {
                 prev = true;
               }
 
@@ -98,7 +98,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
                 dependency.versions.add(curr);
               }
 
-              if (curr.id === max) {
+              if (curr.get('id') === max) {
                 prev = false;
               }
 
@@ -108,7 +108,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
             if (dependency.versions.length) {
               version.dependencies.add(dependency);
             } else {
-              throw new Error('minValue and maxValue combination does not match and versions in ' + version.name);
+              throw new Error('minValue and maxValue combination does not match and versions in ' + version.get('name'));
             }
           });
         });
@@ -196,7 +196,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
       var versions = types[type][library].versions;
 
       for (var i=0;i<versions.length;i++) {
-        if (versions[i].id === id) {
+        if (versions[i].get('id') === id) {
           return versions[i];
         }
       }

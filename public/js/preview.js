@@ -16,8 +16,8 @@ define(['app', 'models/sketch', 'models/revision', 'helpers/revision', 'helpers/
   }
 
   function handler() {
-    var revision = new Revision();
-    var sketch = new Sketch();
+    var revision = new Revision;
+    var sketch = new Sketch;
 
     revisionHelper.updateRevisionFromHash(revision, app.doctypes, app.dm, prep());
 

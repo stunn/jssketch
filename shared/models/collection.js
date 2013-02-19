@@ -54,13 +54,13 @@ define(function ()  {
 
   Collection.prototype.id = function (id) {
     // This is a shortcut for probably the most common form of ID
-    if (typeof id === "number" && id - 1 < this.length && this[id - 1].id === id) {
+    if (typeof id === "number" && id - 1 < this.length && this[id - 1].get('id') === id) {
       return this[id - 1];
     }
 
     // Otherwise lets enumerate over each element
     for (var i=0;i<this.length;i++) {
-      if (this[i].id === id) {
+      if (this[i].get('id') === id) {
         return this[i];
       }
     }

@@ -13,9 +13,9 @@ define(['models/version', 'models/model'], function (Version, Model) {
   });
 
   Constructor.prototype.getType = function () {
-    var library = this.version.library;
+    var library = this.get('version').get('library');
 
-    return (typeof library === "undefined" ? "user" : library.type);
+    return (typeof library === "undefined" ? "user" : library.get('type'));
   }
 
   return Constructor;

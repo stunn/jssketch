@@ -26,7 +26,7 @@ define(['models/version', 'models/model'], function (Version, Model) {
         validator: function (instance) {
           // Check the URL and ID of the versions are unique
           return !this.some(function (other) {
-            return other.id === instance.id || other.url === instance.url;
+            return other.get('id') === instance.get('id') || other.get('url') === instance.get('url');
           });
         }
       }
