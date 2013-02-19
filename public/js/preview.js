@@ -25,7 +25,7 @@ define(['app', 'models/sketch', 'models/revision', 'helpers/revision', 'helpers/
       revision: revision,
       sketch: sketch,
       doctype: app.doctypes.filter(function (doctype) {
-        return doctype.id === revision.doctype;
+        return doctype.id === revision.get('doctype');
       })[0]
     }));
   }
