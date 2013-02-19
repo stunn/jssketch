@@ -10,5 +10,12 @@
     "mini-fier": "git://github.com/mattlunn/mini-fier.git#5ced9ad522200ac1da9968b49b095ea83582e13c",
     "requirejs": "2.1.4"
   },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "test": "node test"
+  },
   "bin": "./bin/jssketch"
 }
