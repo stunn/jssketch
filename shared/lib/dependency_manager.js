@@ -61,7 +61,7 @@ define(['models/dependency', 'models/library', 'models/version'], function (Depe
         // If we get this far and there is no defaultVersion set, the defaultVersion
         // points to a non-existent ID in the config; throw an error.
         if (!library.get('defaultVersion')) {
-          throw new Error(library.name + ' does not have a defaultVersion specified');
+          throw new Error(library.get('name') + ' does not have a defaultVersion specified');
         }
       });
     });

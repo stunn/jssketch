@@ -6,7 +6,7 @@ define(['lib/dependency_manager'], function (dm) {
 
   ["css", "js"].forEach(function (type) {
     dependencyManager.getLibraries(type).forEach(function (library) {
-      console.log("Library " + library.name + " has " + library.versions.length + " versions");
+      console.log("Library " + library.get('name') + " has " + library.versions.length + " versions");
     });
   });
 
