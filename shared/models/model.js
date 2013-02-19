@@ -1,4 +1,4 @@
-define(['models/collection'], function (Collection) {
+define(['models/eventable', 'models/collection'], function (eventable, Collection) {
 
   var defineProperty = (function () {
     if (Object.defineProperty) {
@@ -19,6 +19,11 @@ define(['models/collection'], function (Collection) {
   function Base() {
 
   }
+
+  /**
+   * This adds on() and trigger() functionality
+   */
+  eventable(Base);
 
   /**
    * Validates the Model instance. If a profile is provided as the first
@@ -211,63 +216,6 @@ define(['models/collection'], function (Collection) {
    */
   Base.prototype.get = function (key) {
     return this.properties[key];
-  };
-
-  /**
-   * Attaches an event handler for the "event" event, optionally filtered by the
-   * "filter" filter. In practise, the "event" is something generic like "change",
-   * and "filter" is something more specific such as the property the change
-   * event was fired on.
-   *
-   * @param event The name of the event we want to subscribe for
-   * @param filter Default '*' (i.e. all occurences of the event). Allows us to
-   *        optionally filter for only specific types of the event.
-   * @param callback The callback function. "this" will be the instance the event
-   *        occured on
-   * @return self
-   */
-  Base.prototype.on = function (event, filter, callback) {
-    if (typeof filter === "function") {
-      callback = filter;
-      filter = '*';
-    };
-
-    var events = this._events[event] = this._events[event] || {};
-
-    if (!events.hasOwnProperty(filter)) {
-      events[filter] = [];
-    }
-
-    events[filter].push(callback);
-
-    return this;
-  };
-
-  /**
-   * Triggers the "event" event on the Model Instance.
-   *
-   * @param event: The name of the event to trigger
-   * @param filter: An optional filter of the event (@see on). Default is '*'
-   * @param local: Whether the global '*' event will be supressed. Default is false
-   *        this is mainly used internally.
-   * @return self
-   */
-  Base.prototype.trigger = function (event, filter, local) {
-    var events = this._events[event] = this._events[event] || {};
-
-    filter = filter || '*';
-
-    if (events.hasOwnProperty(filter)) {
-      events[filter].forEach(function (callback) {
-        callback.apply(this);
-      }, this);
-    }
-
-    if (filter !== '*' && !local) {
-      this.trigger(event, '*');
-    }
-
-    return this;
   };
 
   /**

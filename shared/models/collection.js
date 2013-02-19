@@ -1,4 +1,4 @@
-define(function ()  {
+define(['models/eventable'], function (eventable) {
   /**
    * As a shortcut, "prefs" can be the object we want to collect, as well as
    * the normal options object.
@@ -29,6 +29,11 @@ define(function ()  {
   }
 
   Collection.prototype = new Array;
+
+  /**
+   * This adds on() and trigger() functionality
+   */
+  eventable(Collection);
 
   Collection.prototype.add = Collection.prototype.push = function (instance) {
     if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
