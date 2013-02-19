@@ -28,8 +28,6 @@ define(['models/eventable'], function (eventable) {
     this.length = 0;
   }
 
-  Collection.prototype = new Array;
-
   /**
    * This adds on() and trigger() functionality
    */
@@ -72,6 +70,10 @@ define(['models/eventable'], function (eventable) {
 
     return null;
   };
+
+  ["some", "every", "forEach", "reduce", "reduceRight"].forEach(function (key) {
+    Collection.prototype[key] = Array.prototype[key];
+  });
 
   return Collection;
 });

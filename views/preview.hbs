@@ -3,13 +3,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    {{#each revision.cssAssets}}<link rel="stylesheet" href="{{this.properties.version.properties.url}}" />
-    {{/each}}{{#if revision.properties.css}}<style>
+    {{#iter revision.cssAssets}}<link rel="stylesheet" href="{{this.properties.version.properties.url}}" />
+    {{/iter}}{{#if revision.properties.css}}<style>
       {{{pad revision.properties.css 6}}}
     </style>
     {{/if}}
-    {{#each revision.jsAssets}}<script src="{{this.properties.version.properties.url}}"></script>
-    {{/each}}{{#if revision.properties.javascript}}<script>
+    {{#iter revision.jsAssets}}<script src="{{this.properties.version.properties.url}}"></script>
+    {{/iter}}{{#if revision.properties.javascript}}<script>
       {{{pad revision.properties.javascript 6}}}
     </script>
     {{/if}}
