@@ -1,0 +1,309 @@
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after {
+  clear: both;
+}
+
+.cf {
+  *zoom: 1;
+}
+
+html
+{
+  height: 100%;
+  width: 100%;
+
+  font-size: 62.5%;
+}
+
+body
+{
+  display: table;
+  height: 100%;
+  width: 100%;
+
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: lighter;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  color: #000000;
+
+  background-color: #878787;
+}
+
+h1
+{
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: lighter;
+  font-size: 1.5em;
+  line-height: 1em;
+  margin: 0 0 1em 0;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0px #777777;
+}
+
+#top
+{
+  display: table-row;
+}
+
+#bottom
+{
+  display: table-row;
+  padding: 20px;
+}
+
+#editors
+{
+  display: table-cell;
+  vertical-align: top;
+  height: 100%;
+
+  padding: 0 18px;
+}
+
+.editor-cont
+{
+  float: left;
+  display: block;
+  width: 50%;
+  height: 100%;
+}
+
+.editor
+{
+  margin: 0 2px;
+
+  border-radius: 0 0 3px 3px;
+  height: 100%;
+
+  border-top: 0;
+  background-color: #F7F7F7;
+}
+
+.editor-mode
+{
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.editor-mode ul
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  float: right;
+  margin: 5px 5px -1px 5px;
+}
+
+.editor-mode ul li
+{
+  float: left;
+  display: block;
+  padding: 8px 15px 10px 15px;
+  background-color: #EFEFEF;
+  margin-left: 1px;
+  border-top: 2px solid #DDDDDD;
+  font-weight: bold;
+  margin-bottom: 1px;
+}
+
+.editor-mode ul li:first-child
+{
+  border-radius: 3px 0 0 0;
+}
+
+.editor-mode ul li.active
+{
+  border-color: #8DE2A5;
+  border-right: 1px solid #DDDDDD;
+  border-left: 1px solid #DDDDDD;
+  border-bottom: 1px solid #F7F7F7;
+  margin-bottom: 0;
+  background-color: #F7F7F7;
+  border-radius: 3px 3px 0 0;
+}
+
+.editor-mode ul li:last-child
+{
+  border-radius: 0 3px 0 0;
+}
+
+#config
+{
+  display: table-cell;
+  width: 210px;
+  padding: 20px;
+
+  background-color: #515151;
+}
+
+#controls_main
+{
+  display: table-cell;
+  text-align: left;
+  padding: 20px 20px 20px 20px;
+  margin: 0;
+}
+
+#controls_main h1
+{
+  color: #EFEFEF;
+  text-shadow: 1px 1px 0px #000000;
+  font-family: 'Englebert', sans-serif;
+  font-weight: normal;
+  font-size: 3em;
+  line-height: 1.2em;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+#controls_main h2
+{
+  color: #CCCCCC;
+  text-shadow: 1px 1px 0px #000000;
+  font-family: 'Satisfy', sans-serif;
+  font-weight: normal;
+  font-size: 1.5em;
+  line-height: 1.2em;
+  padding: 0;
+  margin: 0 0 0 0.1em;
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+div#controls_config
+{
+  display: table-cell;
+  text-align: right;
+  width: 250px;
+  padding: 10px 20px 10px 20px;
+
+  background-color: #515151;
+}
+
+button
+{
+  margin: 0 0 0 5px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: bold;
+
+}
+
+button#publish_btn
+{
+  background: #F9F15A;
+  color: #5B5A4D;
+  border: 1px solid #FFEC00;
+}
+
+button#run_btn
+{
+  background: #FFF78F;
+  border: 1px solid #F9F15A;
+  color: #5B5A4D;
+}
+
+button#collapse_btn
+{
+  background: #8DE2A5;
+  border: 1px solid #66DD85;
+  color: #2C6D3D;
+}
+
+.CodeMirror
+{
+  font-size: 1.4em !important;
+  line-height: 1.286em !important;
+  border-radius: 0 0 6px 6px;
+}
+
+ol#libraries
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #333333;
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+
+ol#libraries li
+{
+  padding: 5px 5px 5px 10px;
+  background-color: #FFFFFF;
+  border-radius: 3px;
+  margin-bottom: 1px;
+}
+
+ol#libraries li em
+{
+  vertical-align: baseline;
+}
+
+ol#libraries li span
+{
+  float: right;
+  text-align: right;
+  margin: -5px -5px -5px 10px;
+  font-size: 0.833em;
+  line-height: 1.8em;
+  background-color: #DDDDDD;
+  padding: 5px 8px;
+  border-radius: 0 3px 3px 0;
+  width: 50px;
+}
+
+ol#libraries li ol.dependencies
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.833em;
+  line-height: 1.8em;
+  margin: 5px 5px 15px 0;
+}
+
+ol#libraries li ol.dependencies li
+{
+  background-color: #EFEFEF;
+  padding: 3px 8px;
+}
+
+button#addlib_btn
+{
+  background: #8DE2A5;
+  border: 1px solid #66DD85;
+  color: #2C6D3D;
+  float: right;
+  margin: 0;
+}
+
+
+div#config section
+{
+  margin-bottom: 3em;
+}
+
+.abc
+{
+  float: left;
+  position: relative;
+  top: 7px;
+}
+
+.xyz
+{
+  text-align: right;
+}
