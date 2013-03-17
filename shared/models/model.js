@@ -225,10 +225,18 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    * @return Object which represents the JSON representation of this model instance.
    */
   Base.prototype.toJSON = function () {
-    // TODO: This should probably return a copy of the properties;
-    // utils.extend({}, this.properties) would support this, but utils isn't currently
-    // available as a AMD module.
-    return this.properties;
+    var ret = {};
+
+    function move(obj) {
+      Object.keys(obj).forEach(function (key) {
+        ret[key] = obj[key];
+      });
+    }
+
+    move(this.properties);
+    move(this._model.collections);
+
+    return ret;
   }
 
   /**
@@ -269,6 +277,10 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
       throw new Error('Model must be provided with properties');
     }
 
+    if (typeof model.collections !== "object") {
+      model.collections = [];
+    }
+
     function Constructor(properties) {
       var descriptors = this._model.properties;
 
@@ -296,15 +308,13 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
         this.set(key, properties[key], true);
       }, this);
 
-      if (typeof model.collections === "object") {
-        Object.keys(model.collections).forEach(function (key) {
-          defineProperty(this, key, {
-            value: new Collection(model.collections[key]),
-            writeable: false,
-            enumerable: false
-          });
-        }, this);
-      }
+      Object.keys(model.collections).forEach(function (key) {
+        defineProperty(this, key, {
+          value: new Collection(model.collections[key]),
+          writeable: false,
+          enumerable: false
+        });
+      }, this);
 
       (typeof Object.seal === "function") && Object.seal(this);
     }
