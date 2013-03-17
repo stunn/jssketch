@@ -39,19 +39,40 @@ define(function () {
      *
      * @param event: The name of the event to trigger
      * @param filter: An optional filter of the event (@see on). Default is '*'
+     * @param args: An array of args passed to the callback. Default is none.
      * @param local: Whether the global '*' event will be supressed. Default is false
      *        this is mainly used internally.
      * @return self
      */
-    base.prototype.trigger = function (event, filter, local) {
+    base.prototype.trigger = function (event, filter, args, local) {
+      switch (typeof filter) {
+        case "object":
+          // Handle filter being omitted, and filter actually containing args
+          if (Array.isArray(filter)) {
+            args = filter;
+            filter = undefined;
+          }
+        break;
+        // Handle filter and args being omitted, and filter containing local
+        case "boolean":
+          local = filter;
+          filter = undefined;
+        break;
+      }
+
+      if (typeof args === "boolean") {
+        local = args;
+        args = undefined;
+      }
+
       filter = filter || '*';
 
       initEventChain(this, event, filter).forEach(function (callback) {
-        callback.apply(this);
+        callback.apply(this, args || []);
       }, this);
 
       if (filter !== '*' && !local) {
-        this.trigger(event, '*');
+        this.trigger(event, '*', args);
       }
 
       return this;

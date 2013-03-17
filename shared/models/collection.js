@@ -40,12 +40,17 @@ define(['models/eventable'], function (eventable) {
 
     // Otherwise we're good.
     this[this.length++] = instance;
+    this.trigger('add', [instance]);
+
     return this.length;
   };
 
   Collection.prototype.remove = function (el) {
     if (typeof el === "number") {
-      return this.splice.call(this, i, 0)[0];
+      var removed = [].splice.call(this, i, 1)[0];
+
+      this.trigger('remove', [removed]);
+      return removed;
     } else {
       for (var i=0;i<this.length;i++) {
         if (this[i] === el) {
@@ -71,7 +76,7 @@ define(['models/eventable'], function (eventable) {
     return null;
   };
 
-  ["some", "every", "forEach", "reduce", "reduceRight"].forEach(function (key) {
+  ["some", "every", "forEach", "reduce", "reduceRight", "map"].forEach(function (key) {
     Collection.prototype[key] = Array.prototype[key];
   });
 
