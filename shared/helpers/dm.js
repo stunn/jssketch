@@ -74,7 +74,6 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
 
               if (prev) {
                 dependency.versions.add(curr);
-                console.log("Adding version " + curr.get('id') + " where minVersion is " + minVersion + " and maxVersion is " + maxVersion + " for " + library.get('type') + ' ' + library.get('id'));
               }
 
               if (curr.get('id') === maxVersion) {
