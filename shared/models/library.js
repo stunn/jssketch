@@ -3,7 +3,8 @@ define(['models/version', 'models/model'], function (Version, Model) {
     properties: {
       id: {
         type: "number",
-        updateable: false
+        updateable: false,
+        required: true
       },
       type: {
         type: "string",
@@ -12,11 +13,13 @@ define(['models/version', 'models/model'], function (Version, Model) {
       },
       name: {
         type: "string",
-        updateable: false
+        updateable: false,
+        required: true
       },
       defaultVersion: {
         type: Version,
-        updateable: true
+        updateable: true,
+        required: true
       }
     },
 

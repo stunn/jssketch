@@ -5,6 +5,20 @@ define(['models/model', 'require'], function (Model, require) {
         type: "boolean",
         updateable: false,
         fallback: true
+      },
+      isExplicitMinVersion: {
+        type: "boolean",
+        required: true
+      },
+      isExplicitMaxVersion: {
+        type: "boolean",
+        required: true
+      },
+      library: {
+        required: true,
+        validator: function (el) {
+          return el instanceof require('models/library');
+        }
       }
     },
 
