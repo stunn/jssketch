@@ -8,18 +8,45 @@
     {{#iter stylesheets}}<link rel="{{rel this}}" href="{{base this ../settings}}" />
     {{/iter}}
 
-    {{#iter scripts}}<script src="{{base this ../settings}}"></script>
-    {{/iter}}
-    <script data-main="/js/preview.js" src="/js/require.js"></script>
-
+    <script src="/js/require.js"></script>
     <script>
-      var App = {
-        css: {{jsonify css}},
-        js: {{jsonify js}},
-        doctypes: {{jsonify doctypes}}
-      };
-    </script>
+      require.config({
+        "baseUrl": "/js/",
+        "shim": {
+            "handlebars": {
+                "exports": "Handlebars"
+            },
 
+            "codemirror/lib/codemirror": {
+                "exports": "CodeMirror"
+            },
+
+            "jquery-ui": ["jquery"],
+            "bootstrap": ["jquery"],
+            "sexify": ["jquery"],
+            "panes": ["jquery"],
+
+            "codemirror/mode/javascript/javascript": ["codemirror/lib/codemirror"],
+            "codemirror/mode/css/css": ["codemirror/lib/codemirror"],
+            "codemirror/mode/xml/xml": ["codemirror/lib/codemirror"]
+        },
+        "paths": {
+            "codemirror": "../codemirror"
+        }
+      });
+
+      require.config({
+        "config": {
+          "application": {
+            "css": {{jsonify css}},
+            "js": {{jsonify js}},
+            "doctypes": {{jsonify doctypes}}
+          }
+        }
+      });
+
+      require(['editor', 'preview']);
+    </script>
     <script id="source-template" type="text/x-handlebars-template">{{> preview}}</script>
   </head>
   <body>

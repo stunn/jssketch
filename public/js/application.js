@@ -1,38 +1,33 @@
-(function () {
-
-"use strict";
-
-var settings;
-var defaults = {
-  version: 1,
-  panes: [{
-    id: 'left-pane',
-    width: 65,
-    windows: [{
-      id: 'js',
-      height: 100 / 3
-    },{
-      id: 'css',
-      height: 100 / 3
-    },{
-      id: 'html',
-      height: 100 / 3
-    }]
-  }, {
-    id: 'right-pane',
-    width: 35,
-    windows: [{
-      id: 'preview',
-      height: 60
+define(['module', 'helpers/dm'], function (module, dmHelper) {
+  var config = module.config();
+  var defaults = {
+    version: 1,
+    panes: [{
+      id: 'left-pane',
+      width: 65,
+      windows: [{
+        id: 'js',
+        height: 100 / 3
+      },{
+        id: 'css',
+        height: 100 / 3
+      },{
+        id: 'html',
+        height: 100 / 3
+      }]
     }, {
-      id: 'source',
-      height: 40
+      id: 'right-pane',
+      width: 35,
+      windows: [{
+        id: 'preview',
+        height: 60
+      }, {
+        id: 'source',
+        height: 40
+      }]
     }]
-  }]
-};
-
-window.Application = {
-  init: function () {
+  };
+  var settings = (function () {
     var loaded;
 
     try {
@@ -50,20 +45,27 @@ window.Application = {
     }
 
     loaded.version = defaults.version;
-    settings = loaded;
-  },
+    return loaded;
+  }());
 
-  save: function () {
-    window.localStorage.setItem("settings", JSON.stringify(settings));
-  },
+  return {
+    save: function () {
+      window.localStorage.setItem("settings", JSON.stringify(settings));
+    },
 
-  get: function (key) {
-    return settings[key];
-  },
+    get: function (key) {
+      return settings[key];
+    },
 
-  set: function (key, value) {
-    settings[key] = value;
-  }
-};
+    set: function (key, value) {
+      settings[key] = value;
+    },
 
-}());
+    dm: dmHelper.fromSerializedForm({
+      css: config.css,
+      js: config.js
+    }),
+
+    doctypes: config.doctypes
+  };
+});
