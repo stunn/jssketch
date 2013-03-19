@@ -43,6 +43,32 @@ define(
       }
     });
 
+    var DependencyVM = new Model({
+      properties: {
+        id: {
+          type: "number",
+          updateable: false,
+          required: true
+        },
+        name: {
+          type: "string",
+          updateable: false,
+          required: true
+        },
+        version: {
+          type: "string",
+          updateable: false,
+          required: true
+        },
+        refTo: {
+          type: Version,
+          updateable: false,
+          required: false,
+          fallback: null
+        }
+      }
+    });
+
     return {
       LibraryListVM: LibraryListVM
     };
