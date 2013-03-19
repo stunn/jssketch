@@ -1,0 +1,24 @@
+{
+  "baseUrl": "/js/",
+  "shim": {
+    "handlebars": {
+        "exports": "Handlebars"
+    },
+
+    "codemirror/lib/codemirror": {
+        "exports": "CodeMirror"
+    },
+
+    "jquery-ui": ["jquery"],
+    "bootstrap": ["jquery"],
+    "sexify": ["jquery"],
+    "panes": ["jquery"],
+
+    "codemirror/mode/javascript/javascript": ["codemirror/lib/codemirror"],
+    "codemirror/mode/css/css": ["codemirror/lib/codemirror"],
+    "codemirror/mode/xml/xml": ["codemirror/lib/codemirror"]
+  },
+  "paths": {
+    "codemirror": "../codemirror"
+  }
+}

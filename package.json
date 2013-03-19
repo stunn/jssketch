@@ -15,7 +15,8 @@
     "should": "*"
   },
   "scripts": {
-    "test": "node test"
+    "test": "node test",
+    "build": "node build"
   },
   "bin": "./bin/jssketch"
 }
