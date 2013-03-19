@@ -17,9 +17,7 @@ define(['models/asset'], function (Asset) {
       revision.set(hash);
 
       // If what we've got so far is valid, move onto checking the assets.
-      if (revision.validate() !== true || !doctypes.some(function (doctype) {
-        return doctype.id === revision.get('doctype');
-      })) {
+      if (revision.validate() !== true || !doctypes.hasOwnProperty(revision.get('doctype'))) {
         return error('Revision did not validate');
       }
 

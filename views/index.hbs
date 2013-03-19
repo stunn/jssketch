@@ -81,9 +81,9 @@
                 </label>
 
                 <select name="doctype" class="sexy-select">
-                {{#iter doctypes}}
-                  <option value="{{this.id}}">{{this.description}}</option>
-                {{/iter}}
+
+                  {{#iter doctypes}}<option value="{{@key}}">{{this.description}}</option>
+                  {{/iter}}
                 </select>
 
                 <div class="btn-group">
