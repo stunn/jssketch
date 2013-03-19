@@ -277,7 +277,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
       throw new Error('Model must be provided with properties');
     }
 
-    if (typeof model.collections !== "object") {
+    if (!Array.isArray(model.collections)) {
       model.collections = [];
     }
 
