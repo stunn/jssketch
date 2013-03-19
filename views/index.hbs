@@ -7,6 +7,9 @@
 
     {{#iter stylesheets}}<link rel="{{rel this}}" href="{{base this ../settings}}" />
     {{/iter}}
+    <!-- https://github.com/stunn/jssketch/issues/6 -->
+    <script>(Object.keys || document.write("<script src=\"{{base "/js/es5-shim.js"}}\"><\/script>"));</script>
+
     <script src="/js/require.js"></script>
     <script>
       require.config({{jsonify requirejs}});
