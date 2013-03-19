@@ -4,11 +4,11 @@ define(function () {
       var rel = "";
 
       switch (url.slice(url.lastIndexOf("."))) {
-        case ".css":
-          rel = "stylesheet";
-        break;
         case ".less":
           rel = "stylesheet/less";
+        break;
+        default:
+          rel = "stylesheet";
         break;
       }
 
