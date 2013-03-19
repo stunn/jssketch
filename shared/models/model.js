@@ -278,7 +278,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
     }
 
     if (typeof model.collections !== "object") {
-      model.collections = [];
+      model.collections = {};
     }
 
     function Constructor(properties) {
