@@ -25,9 +25,14 @@ define(['models/model', 'models/asset'], function (Model, Asset) {
       },
       doctype: {
         type: "string",
-        updateable: "true",
+        updateable: true,
         required: true,
         fallback: "1"
+      },
+      createdAt: {
+        type: Date,
+        updateable: false,
+        required: false
       }
     },
 

@@ -15,6 +15,7 @@ define(['models/asset'], function (Asset) {
       }
 
       revision.set(hash);
+      revision.set('createdAt', new Date());
 
       // If what we've got so far is valid, move onto checking the assets.
       if (revision.validate() !== true || !doctypes.hasOwnProperty(revision.get('doctype'))) {
