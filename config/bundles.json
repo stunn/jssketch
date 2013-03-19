@@ -1,12 +1,11 @@
 {
   "editor": {
     "css": [
-      "css/normalize.css",
-      "css/jquery-ui.css",
       "codemirror/lib/codemirror.css",
-      "codemirror/theme/neat.css",
-      "css/bootstrap.css",
-      "css/main.less"
+      "http://fonts.googleapis.com/css?family=Englebert",
+      "http://fonts.googleapis.com/css?family=Satisfy",
+      "css/normalize.css",
+      "css/main.css"
     ],
 
     "js": true
