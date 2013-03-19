@@ -1,0 +1,134 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <title>
+    jsSketch |
+    {{#if sketch.id}}{{sketch.id}} v{{revision.id}} {{else}}Home{{/if}}
+  </title>
+
+  {{#each stylesheets}}
+    <link rel="{{rel this}}" href="{{base this ../settings}}" />
+  {{/each}}
+
+  <!-- https://github.com/stunn/jssketch/issues/6 -->
+  <script>
+    (Object.keys || document.write(
+      "<script src=\"{{base "/js/es5-shim.js"}}\"><\/script>"));
+  </script>
+
+  <script src="/js/require.js"></script>
+  <script>
+    require.config({{jsonify requirejs}});
+
+    require.config({
+      "config": {
+        "application": {
+          "css": {{jsonify css}},
+          "js": {{jsonify js}},
+          "doctypes": {{jsonify doctypes}}
+        }
+      }
+    });
+
+    require({{jsonify scripts}});
+  </script>
+
+  <script id="source-template" type="text/x-handlebars-template">
+    {{> preview}}
+  </script>
+
+  <script id="library-list-tpl" type="text/x-handlebars-template">
+    <ol id="libraries">
+    </ol>
+  </script>
+
+  <script id="library-tpl" type="text/x-handlebars-template">
+    <li class="cf">
+      <div class="delete">
+        <img src="img/ret/bin.png" width="16" height="16" />
+      </div>
+      <div class="index">1</div>
+        \{{ name }}
+        <span>v\{{ version }}</span>
+    </li>
+  </script>
+
+  <script id="dependency-tpl" type="text/x-handlebars-template">
+  </script>
+</head>
+
+<body>
+  <div id="top">
+    <section id="editors">
+      <!-- Editor 1 -->
+      <div class="editor-cont">
+        <div class="editor">
+          <nav class="editor-mode cf">
+            <ul>
+              <li class="active">HTML</li>
+              <li>CSS</li>
+              <li>JS</li>
+              <li>Result</li>
+              <li>Source</li>
+            </ul>
+          </nav>
+          <div class="editor-codepad"></div>
+        </div>
+      </div>
+
+      <!-- Editor 2-->
+      <div class="editor-cont">
+        <div class="editor">
+          <nav class="editor-mode cf">
+            <ul>
+              <li>HTML</li>
+              <li>CSS</li>
+              <li class="active">JS</li>
+              <li>Result</li>
+              <li>Source</li>
+            </ul>
+          </nav>
+          <div class="editor-codepad"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="config">
+      <section id="library-manager" class="cf">
+        <h1>Libraries</h1>
+
+        <!--<button id="addlib_btn">Add...</button>-->
+      </section>
+
+      <section>
+        <h1>External Assets</h1>
+      </section>
+
+      <section>
+        <h1>Mock AJAX Endpoints</h1>
+      </section>
+    </section>
+  </div>
+
+  <div id="bottom">
+    <div id="controls_main" class="cf">
+      <div class="abc">
+        <h1>jsSketch</h1>
+        <h2>beta</h2>
+      </div>
+
+      <div class="xyz">
+        <button id="run_btn">Run</button>
+        <button id="publish_btn">Publish</button>
+      </div>
+    </div>
+
+    <div id="controls_config">
+      <button id="collapse_btn">✔</button>
+    </div>
+  </div>
+</body>
+</html>
