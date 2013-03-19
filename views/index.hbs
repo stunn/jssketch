@@ -1,122 +1,142 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
 
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
+    <title>jsSketch | {{#if sketch.properties.id}}{{sketch.properties.id}} v{{revision.properties.id}} {{else}}Home{{/if}}</title>
 
-  <title>
-    jsSketch |
-    {{#if sketch.id}}{{sketch.id}} v{{revision.id}} {{else}}Home{{/if}}
-  </title>
+    {{#iter stylesheets}}<link rel="{{rel this}}" href="{{base this ../settings}}" />
+    {{/iter}}
+    <!-- https://github.com/stunn/jssketch/issues/6 -->
+    <script>(Object.keys || document.write("<script src=\"{{base "/js/es5-shim.js"}}\"><\/script>"));</script>
 
-  {{#each stylesheets}}
-    <link rel="{{rel this}}" href="{{base this ../settings}}" />
-  {{/each}}
+    <script src="/js/require.js"></script>
+    <script>
+      require.config({{jsonify requirejs}});
 
-  <script src="/js/require.js"></script>
-  <script>
-    require.config({{jsonify requirejs}});
-
-    require.config({
-      "config": {
-        "application": {
-          "css": {{jsonify css}},
-          "js": {{jsonify js}},
-          "doctypes": {{jsonify doctypes}}
+      require.config({
+        "config": {
+          "application": {
+            "css": {{jsonify css}},
+            "js": {{jsonify js}},
+            "doctypes": {{jsonify doctypes}}
+          }
         }
-      }
-    });
+      });
 
-    require({{jsonify scripts}});
-  </script>
+      require({{jsonify scripts}});
+    </script>
+    <script id="source-template" type="text/x-handlebars-template">{{> preview}}</script>
+  </head>
+  <body>
+    <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
+      <input type="hidden" name="id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
 
-  <script id="source-template" type="text/x-handlebars-template">
-    {{> preview}}
-  </script>
-</head>
+      <input type="hidden" name="js_assets" value="[{&quot;type&quot;:&quot;js&quot;,&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:1,&quot;id&quot;:&quot;1&quot;},{&quot;parent&quot;:null,&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;}]" />
+      <input type="hidden" name="css_assets" value="[{&quot;parent&quot;:null,&quot;type&quot;:&quot;css&quot;,&quot;library&quot;:1,&quot;id&quot;:&quot;2&quot;},{&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:2,&quot;type&quot;:&quot;css&quot;,&quot;id&quot;:&quot;1&quot;}]" />
+      <input type="hidden" name="ajax" value="[]" />
 
-<body>
-  <div id="top">
-    <section id="editors">
-      <!-- Editor 1 -->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li class="active">HTML</li>
-              <li>CSS</li>
-              <li>JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
+      <div id="nav">
+        <h1>jssketch</h1>
+
+        <nav>
+          <button class="btn btn-inverse btn-mini" name="preview" type="submit"><i class="icon-white icon-play"></i></button>
+          <button class="btn btn-inverse btn-mini" name="save" type="submit" value="update"><i class="icon-white icon-briefcase"></i></button>
+
+          {{#if sketch.properties.id}}
+            <button class="btn btn-inverse btn-mini" name="save" type="submit" value="fork"><i class="icon-white icon-random"></i></button>
+          {{/if}}
+        </nav>
+      </div>
+      <div id="main">
+        <div class="pane left" id="left-pane">
+          <section id="js" class="panel">
+            <div class="container">
+              <header>
+                <h1>JS</h1>
+
+                <label>Insert</label>
+
+                <select name="js_insert" class="sexy-select">
+                  <option value="body-wrapped">Before &lt;/body&gt; (wrapped)</option>
+                  <option value="body-unwrapped">Before &lt;/body&gt; (unwrapped)</option>
+                  <option value="head-wrapped">In &lt;head&gt; (wrapped)</option>
+                  <option value="head-unwrapped">In &lt;head&gt; (unwrapped)</option>
+                </select>
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
+                </div>
+
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="javascript" data-mode="javascript">{{revision.properties.javascript}}</textarea>
+              </div>
+            </div>
+          </section>
+          <section id="html" class="panel">
+            <div class="container">
+              <header>
+                <h1>HTML</h1>
+
+                <label>
+                  DocType
+                </label>
+
+                <select name="doctype" class="sexy-select">
+
+                  {{#iter doctypes}}<option value="{{@key}}">{{this.description}}</option>
+                  {{/iter}}
+                </select>
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
+                </div>
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="html" data-mode="xml">{{revision.properties.html}}</textarea>
+              </div>
+            </div>
+          </section>
+          <section id="css" class="panel">
+            <div class="container">
+              <header>
+                <h1>CSS</h1>
+
+                <div class="btn-group">
+                  <button class="btn btn-mini btn-primary tidy-trigger" type="button">Tidy</button>
+                </div>
+              </header>
+              <div class="body">
+                <textarea class="codemirror" name="css" data-mode="text/css">{{revision.properties.css}}</textarea>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="pane right" id="right-pane">
+          <section id="preview" class="panel">
+            <div class="container">
+              <header>
+                <h1>PREVIEW</h1>
+              </header>
+              <div class="body">
+                <div class="shield"></div>
+                <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview" sketch.properties.id revision.properties.id}}"{{/if}}></iframe>
+              </div>
+            </div>
+          </section>
+          <section id="source" class="panel">
+            <div class="container">
+              <header>
+                <h1>SOURCE VIEWER</h1>
+              </header>
+              <div class="body">
+                <textarea class="codemirror" data-mode="xml"></textarea>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-
-      <!-- Editor 2-->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li>HTML</li>
-              <li>CSS</li>
-              <li class="active">JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="config">
-      <section class="cf">
-        <h1>Libraries</h1>
-
-        <ol id="libraries">
-          <li class="cf">JQuery<span>v1.9.0</span></li>
-          <li class="cf">CodeMirror<span>v3.02</span></li>
-          <li class="cf">
-            <ol class="dependencies">
-              <li>Library A</li>
-              <li>Library B</li>
-            </ol>
-            RequireJS<span>v2.1</span>
-          </li>
-          <li class="cf">BackboneJS<span>v0.9.1</span></li>
-        </ol>
-
-        <!--<button id="addlib_btn">Add...</button>-->
-      </section>
-
-      <section>
-        <h1>External Assets</h1>
-      </section>
-
-      <section>
-        <h1>Mock AJAX Endpoints</h1>
-      </section>
-    </section>
-  </div>
-
-  <div id="bottom">
-    <div id="controls_main" class="cf">
-      <div class="abc">
-        <h1>jsSketch</h1>
-        <h2>beta</h2>
-      </div>
-
-      <div class="xyz">
-        <button id="run_btn">Run</button>
-        <button id="publish_btn">Publish</button>
-      </div>
-    </div>
-
-    <div id="controls_config">
-      <button id="collapse_btn">✔</button>
-    </div>
-  </div>
-</body>
+    </form>
+  </body>
 </html>
