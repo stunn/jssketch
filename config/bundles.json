@@ -1,0 +1,14 @@
+{
+  "editor": {
+    "css": [
+      "css/normalize.css",
+      "css/jquery-ui.css",
+      "codemirror/lib/codemirror.css",
+      "codemirror/theme/neat.css",
+      "css/bootstrap.css",
+      "css/main.less"
+    ],
+
+    "js": true
+  }
+}

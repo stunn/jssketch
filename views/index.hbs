@@ -7,7 +7,6 @@
 
     {{#iter stylesheets}}<link rel="{{rel this}}" href="{{base this ../settings}}" />
     {{/iter}}
-
     <script src="/js/require.js"></script>
     <script>
       require.config({
@@ -45,7 +44,7 @@
         }
       });
 
-      require(['preview']);
+      require(['editor']);
     </script>
     <script id="source-template" type="text/x-handlebars-template">{{> preview}}</script>
   </head>
