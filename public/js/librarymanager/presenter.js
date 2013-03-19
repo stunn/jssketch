@@ -7,21 +7,21 @@ define(
       // Setup our library management lists. Hardcoding these as they're not 
       // gunna change (famous last words).
       this.libLists = {
-        js: new LibraryListVM({ name: "js" }),
-        css: new LibraryListVM({ name: "css" })
+        js: new models.LibraryListVM({ name: "js" }),
+        css: new models.LibraryListVM({ name: "css" })
       };
 
       // Build out list views, and simple behaviours.
       Object.keys(this.libLists).forEach(function (v) {
-        var libListView = new LibraryListView();
+        var libListView = new views.LibraryListView();
         $(domParent).append(libListView.render());
 
-        this.v.libraries.on('add', function (libVM) {
-          var libView = new LibraryView(libVM);
-          libListView.appendItem(libVM, libView.render());
+        this[v].libraries.on('add', function (libVM) {
+          var libView = new views.LibraryView(libVM);
+          libListView.appendItem(libVM, libView);
         });
 
-        this.v.libraries.on('remove', function (libVM) {
+        this[v].libraries.on('remove', function (libVM) {
           libListView.removeItem(libVM);
         });
       }, this.libLists);
@@ -38,7 +38,7 @@ define(
             v.library + ', version ' + v.id + '.');
         }
 
-        var libvm = new LibraryVM({
+        var libvm = new models.LibraryVM({
           id: version.get('library').get('id'),
           name: version.get('library').get('name'),
           version: version.get('name'),
@@ -47,7 +47,9 @@ define(
 
         // Add in to the appropriate library list.
         this.libLists[v.type].libraries.add(libvm);
-      });
+      }.bind(this));
     };
+
+    return Presenter;
   }
 );

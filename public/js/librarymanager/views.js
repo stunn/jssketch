@@ -3,7 +3,7 @@ define(['handlebars', 'jquery'], function (Handlebars, jQuery) {
 
   function LibraryListView()
   {
-    this.$el = $(jQuery.parseHTML(libraryViewTpl()));
+    this.$el = $(jQuery.parseHTML(libraryListViewTpl()));
     this.itemIndex = [];
   }
 
@@ -59,4 +59,10 @@ define(['handlebars', 'jquery'], function (Handlebars, jQuery) {
   DependencyView.prototype.render = function () {
     return this.$el;
   }
+
+  return {
+    LibraryListView: LibraryListView,
+    LibraryView: LibraryView,
+    DependencyView: DependencyView
+  };
 });

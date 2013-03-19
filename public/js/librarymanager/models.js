@@ -70,7 +70,9 @@ define(
     });
 
     return {
-      LibraryListVM: LibraryListVM
+      LibraryListVM: LibraryListVM,
+      LibraryVM: LibraryVM,
+      DependencyVM: DependencyVM
     };
   }
 );
