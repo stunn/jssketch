@@ -1,4 +1,33 @@
 define(['handlebars', 'jquery'], function (Handlebars, jQuery) {
+  var libraryListViewTpl = Handlebars.compile($('#library-list-tpl').html());
+
+  function LibraryListView()
+  {
+    this.$el = $(jQuery.parseHTML(libraryViewTpl()));
+    this.itemIndex = [];
+  }
+
+  LibraryListView.prototype.appendItem = function (key, view) {
+    this.itemIndex.push({ key: key, view: view.render() });
+    this.$el.append(view.render());
+  };
+
+  LibraryListView.prototype.removeItem = function (key) {
+    this.itemIndex.some(function (v, k, collection) {
+      if (v.key != key) {
+        return false;
+      }
+
+      v.view.remove(v.view);
+      collection.splice(k, 1);
+      return true;
+    });
+  };
+
+  LibraryListView.prototype.render = function () {
+    return this.$el;
+  };
+
   var libraryViewTpl = Handlebars.compile($('#library-tpl').html());
 
   function LibraryView(library)
