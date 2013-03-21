@@ -1,6 +1,5 @@
 var broker = require('../lib/broker');
 var Collection = broker.load('models/collection');
-var should = require('should');
 
 describe('Collection Events', function () {
   var collection = new Collection(Object);

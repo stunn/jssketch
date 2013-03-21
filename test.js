@@ -2,6 +2,8 @@ var Mocha = require('mocha');
 var path = require('path');
 var fs = require('fs');
 
+require('should');
+
 var mocha = new Mocha({
   reporter: 'spec'
 });
