@@ -81,4 +81,30 @@ describe('Model', function () {
 
     instance.validate().should.not.be.a('string');
   });
+
+  it('should throw when getting a non-existant key', function () {
+    var instance = new Base;
+
+    (function () {
+      instance.get('nothing');
+    }).should.throw();
+  });
+
+  it('should throw when directly setting a non-existant key', function () {
+    var instance = new Base;
+
+    (function () {
+      instance.set('nothing', 5);
+    }).should.throw();
+  });
+
+  it('shouldn\'t throw when setting a non-existant key via hash', function () {
+    var instance = new Base;
+
+    (function () {
+      instance.set({
+        nothing: 5
+      });
+    }).should.not.throw();
+  });
 });

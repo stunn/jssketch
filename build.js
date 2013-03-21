@@ -1,10 +1,10 @@
+var bundles = require('./config/bundles.json');
 var utils = require('utils');
-var bundles = utils.readJsonFileSync(__dirname + '/config/bundles');
 
 // Minify JS
 (function  () {
+  var config = require('./config/requirejs');
   var requirejs = require('requirejs');
-  var config = utils.readJsonFileSync(__dirname + '/config/requirejs');
 
   utils.extend(config, {
     appDir: __dirname + '/public',
@@ -26,9 +26,9 @@ var bundles = utils.readJsonFileSync(__dirname + '/config/bundles');
   }, true);
 
   requirejs.optimize(config, function (buildResponse) {
-    console.log(buildResponse);
+    console.log('JS files build successfully');
   }, function(err) {
-    console.log(err.toString());
+    console.log('Error building JS files: ' + err.toString());
   });
 }());
 
@@ -43,6 +43,10 @@ var bundles = utils.readJsonFileSync(__dirname + '/config/bundles');
       srcPath: __dirname + '/public/',
       filesIn: files,
       destination: __dirname + '/build/css/all.' + name + '.css'
+    }).on('error', function (err) {
+      console.log('Error building CSS files: ' + err.toString());
+    }).on('complete', function () {
+      console.log('CSS files build successfully')
     });
   });
 }());

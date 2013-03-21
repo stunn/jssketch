@@ -5,7 +5,7 @@
   "dependencies": {
     "utils": "git://github.com/mattlunn/node-util.git",
     "express": "3.0.6",
-    "hbs": "2.0.1",
+    "hbs": "2.1.0",
     "commander": "1.1.1",
     "mini-fier": "git://github.com/mattlunn/mini-fier.git#1ae9083093cabd273340e2c5c984e9908894cdbf",
     "requirejs": "2.1.4"

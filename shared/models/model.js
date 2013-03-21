@@ -208,13 +208,17 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
   };
 
   /**
-   * Returns the current value of the "key" property, or "undefined" if the
-   * property does not exist.
+   * Returns the current value of the "key" property. Throws an error if the key
+   * doesn't exist.
    *
    * @param key: The parameter to retrieve
    * @return value
    */
   Base.prototype.get = function (key) {
+    if (!this.properties.hasOwnProperty(key)) {
+      throw new Error('Model does not have the property ' + key);
+    }
+
     return this.properties[key];
   };
 

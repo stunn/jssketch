@@ -1,25 +1,11 @@
 #!/usr/bin/env node
 
 var program = require('commander');
-var utils = require('utils');
 var path = require('path');
 
-var jssketch = require('../lib/app');
+var app = require('../lib/app');
 
-program.option('-c, --config <file>', 'Path to the config file', path.join(__dirname, '..', 'config', 'config.json'))
-       .option('--no-build', 'Does not minify CSS and JS files prior to launching application')
+program.option('-c, --config <file>', 'Path to the config file', path.join('..', 'config', 'config.json'))
        .parse(process.argv);
 
-var app = jssketch(utils.readJsonFileSync(program.config));
-
-if (program.build) {
-  app.build(function (err) {
-    if (err) {
-      throw err;
-    }
-    
-    app.start();
-  });
-} else {
-  app.start();
-}
+app(require(program.config)).start();
