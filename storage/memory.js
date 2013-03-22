@@ -77,7 +77,10 @@ MemoryStorage.prototype.saveAjax = function (ajax, callback, generator) {
 
 MemoryStorage.prototype.getAjax = function (id, callback) {
   if (this._ajax.hasOwnProperty(id)) {
-    callback(null, JSON.parse(this._ajax[id]));
+    var parsed = JSON.parse(this._ajax[id]);
+
+    parsed.id = id;
+    callback(null, parsed);
   } else {
     callback(new Error('No Ajax model with ID of ' + id + ' exists'));
   }

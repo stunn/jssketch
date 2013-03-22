@@ -1,6 +1,6 @@
 var app = require('./support/server');
 
-describe('AJAX', function () {
+describe('AJAX Web Requests', function () {
   var payload = {
     test: 1
   };

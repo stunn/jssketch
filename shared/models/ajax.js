@@ -2,8 +2,9 @@ define(['models/model'], function (Model, Asset) {
   return new Model({
     properties: {
       id: {
-        type: "number",
-        updateable: false
+        type: "string",
+        updateable: false,
+        required: false
       },
       payload: {
         type: "string",
