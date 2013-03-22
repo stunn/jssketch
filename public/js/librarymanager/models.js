@@ -1,6 +1,6 @@
 define(
-  ['application', 'models/model', 'models/version'],
-  function (application, Model, Version)
+  ['application', 'models/model'],
+  function (application, Model)
   {
     var LibraryVM = new Model({
       properties: {
@@ -26,7 +26,11 @@ define(
         }
       },
       collections: {
-        dependsOn: Version
+        dependsOn: {
+          validator: function (el) {
+            return (el instanceof LibraryVM);
+          }
+        }
       }
     });
 
@@ -61,7 +65,7 @@ define(
           required: true
         },
         refTo: {
-          type: Version,
+          type: LibraryVM,
           updateable: false,
           required: false,
           fallback: null
