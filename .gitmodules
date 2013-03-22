@@ -1,3 +1,6 @@
 [submodule "public/codemirror"]
 	path = public/codemirror
 	url = git://github.com/marijnh/CodeMirror.git
+[submodule "public/mocha"]
+	path = public/mocha
+	url = git://github.com/visionmedia/mocha.git

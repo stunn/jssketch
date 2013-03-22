@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <link rel="stylesheet" href="../../public/mocha/mocha.css" />
+
+  <script src="../../public/js/jquery.js"></script>
+  <script src="../../public/js/require.js"></script>
+  <script>
+    // TODO: Read in the common base config (requirejs.json).
+    requirejs.config(jQuery.extend({
+      "baseUrl": "/js/",
+      "shim": {
+        "handlebars": {
+            "exports": "Handlebars"
+        },
+
+        "codemirror/lib/codemirror": {
+            "exports": "CodeMirror"
+        },
+
+        "jquery-ui": ["jquery"],
+
+        "codemirror/mode/javascript/javascript": ["codemirror/lib/codemirror"],
+        "codemirror/mode/css/css": ["codemirror/lib/codemirror"],
+        "codemirror/mode/xml/xml": ["codemirror/lib/codemirror"]
+      },
+      "paths": {
+        "codemirror": "../codemirror"
+      }
+    },
+    {
+      baseUrl: '../../public/js',
+      paths: {
+        lib: '../../shared/lib',
+        helpers: '../../shared/helpers',
+        models: '../../shared/models',
+        tests: '../../test/browser'
+      },
+      urlArgs: (new Date()).getTime()
+    }));
+  </script>
+  <script src="../../public/mocha/mocha.js"></script>
+  <script>mocha.setup('bdd');</script>
+  <script>
+    require(
+      ['tests/hashtable'],
+      function ()
+      {
+        $(document).ready(function () {
+          mocha.run();
+        });
+      }
+    );
+  </script>
+</head>
+
+<body>
+  <div id="mocha"></div>
+</body>
+</html>
