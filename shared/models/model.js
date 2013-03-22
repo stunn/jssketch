@@ -215,7 +215,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    * @return value
    */
   Base.prototype.get = function (key) {
-    if (!this.properties.hasOwnProperty(key)) {
+    if (!this._model.properties.hasOwnProperty(key)) {
       throw new Error('Model does not have the property ' + key);
     }
 

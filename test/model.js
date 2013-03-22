@@ -15,6 +15,10 @@ describe('Model', function () {
         }
       },
 
+      name: {
+        type: "string"
+      },
+
       array: {
         required: true,
         type: Array
@@ -88,6 +92,14 @@ describe('Model', function () {
     (function () {
       instance.get('nothing');
     }).should.throw();
+  });
+
+  it('should not throw when getting a property which is undefined', function () {
+    var instance = new Base;
+
+    (function () {
+      instance.get('name');
+    }).should.not.throw();
   });
 
   it('should throw when directly setting a non-existant key', function () {
