@@ -3,8 +3,13 @@ var app = require('../../lib/app')({
   "base": "jssketch.local.mattlunn.me.uk",
   "jail": "jssketch-other.local.mattlunn.me.uk",
   "port": 3000,
-  "production": false
+  "production": false,
+
+  "storage": "memory",
+  "storageArgs": []
 });
+
+module.exports.app = app;
 
 module.exports.getBase = function (path) {
   return request(app.app).get(app.config.getBaseUrl(path)).set('Host', app.config.get('base'));
