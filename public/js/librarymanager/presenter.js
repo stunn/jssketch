@@ -1,7 +1,18 @@
 define(
-  ['librarymanager/models', 'librarymanager/views', 'application', 'jquery'],
-  function (models, views, app, jQuery)
+  ['librarymanager/models', 'librarymanager/views',
+   'librarymanager/jsonreader', 'application', 'jquery',
+   'jquery-ui'],
+  function (models, views, JsonReader, app, jQuery)
   {
+    function handleMoveNested(event, ui)
+    {
+      var $el = ui.item;
+      if ($el.parent()[0] == $('#libraries')[0]) {
+        var newView = new views.LibraryView($el.data('vm'));
+        $el.replaceWith(newView.render());
+      }
+    }
+
     function Presenter(domParent)
     {
       // Setup our library management lists. Hardcoding these as they're not 
@@ -11,43 +22,36 @@ define(
         css: new models.LibraryListVM({ name: "css" })
       };
 
-      // Build out list views, and simple behaviours.
-      Object.keys(this.libLists).forEach(function (v) {
-        var libListView = new views.LibraryListView();
-        $(domParent).append(libListView.render());
+      this.libListView = new views.LibraryListView();
+      $(domParent).append(this.libListView.render());
 
+      // Build out list views, and simple behaviours.
+      var that = this; // TODO: Probably change the binding below instead.
+      Object.keys(this.libLists).forEach(function (v) {
         this[v].libraries.on('add', function (libVM) {
           var libView = new views.LibraryView(libVM);
-          libListView.appendItem(libVM, libView);
+          that.libListView.appendItem(libVM, libView);
         });
 
         this[v].libraries.on('remove', function (libVM) {
-          libListView.removeItem(libVM);
+          that.libListView.removeItem(libVM);
         });
       }, this.libLists);
     }
 
     Presenter.prototype.loadFromJSON = function (json) {
-      // Assemble LibraryVMs.
-      json.forEach(function (v, k) {
-        // Resolve the library reference. If we can't, log and give up.
-        var version = app.dm.getLibraryVersion(v.type, v.library, v.id);
-        if (typeof version === "undefined") {
-          log(
-            'Unable to resolve library: type ' + v.type + ', lib ' +
-            v.library + ', version ' + v.id + '.');
-        }
+      var reader = new JsonReader(json);
+      var libraryList = reader.read();
 
-        var libvm = new models.LibraryVM({
-          id: version.get('library').get('id'),
-          name: version.get('library').get('name'),
-          version: version.get('name'),
-          color: 'FF0000'
-        });
-
-        // Add in to the appropriate library list.
-        this.libLists[v.type].libraries.add(libvm);
+      libraryList.forEach(function (v, k) {
+        this.libLists['js'].libraries.add(v); // TODO: Make this work.
       }.bind(this));
+
+      // TODO: Bit of a hack - looks like we need to wait for the list to be
+      // populated before setting this up.
+      $('#libraries').sortable({
+        axis: 'y'
+      });
     };
 
     return Presenter;

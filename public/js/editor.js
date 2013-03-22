@@ -17,20 +17,21 @@ define(
       libManagerPresenter.loadFromJSON(
         [
           {
-            "type":"js",
-            "parent":{
-              "type":"js",
-              "library":2,
-              "id":"1"
-            },
-            "library":1,
-            "id":"1"
+            libraryType: "js",
+            libraryId: 1,
+            versionId: '1',
+            dependsOn: null
           },
           {
-            "type":"js",
-            "parent":null,
-            "library":2,
-            "id":"1"
+            libraryType: 'js',
+            libraryId: 2,
+            versionId: '1',
+            dependsOn: [{
+              libraryType: 'js',
+              libraryId: 1,
+              versionId: '1',
+              dependsOn: null
+            }]
           }
         ]
       );
