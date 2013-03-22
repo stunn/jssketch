@@ -46,7 +46,7 @@ define(
         }
       });
 
-      it('should setup dependencies properly', function () {
+      it('should setup one-deep dependencies properly', function () {
         var input = [
           {
             libraryType: 'js',
