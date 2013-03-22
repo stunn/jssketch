@@ -35,6 +35,16 @@ var Config = new Model({
       updateable: true
     },
 
+    base_alias: {
+      type: "string",
+      updateable: true
+    },
+
+    jail_alias: {
+      type: "string",
+      updateable: true
+    },
+
     port: {
       type: "number",
       fallback: 3000,
