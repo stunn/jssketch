@@ -47,6 +47,9 @@ define(
       });
 
       it('should setup one-deep dependencies properly', function () {
+        // Because we expose the entire dep chain as a flat list, we should
+        // never require more than one level of nesting - though the importer
+        // supports more.
         var input = [
           {
             libraryType: 'js',
