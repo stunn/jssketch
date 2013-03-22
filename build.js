@@ -34,7 +34,7 @@ var utils = require('utils');
 
 // Minify CSS
 (function () {
-  var minifier = require('mini-fier');
+  var minifier = require('mini-fier').create();
 
   Object.keys(bundles).forEach(function (name) {
     var files = bundles[name].css || [];
