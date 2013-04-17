@@ -33,14 +33,18 @@ define(['models/eventable'], function (eventable) {
    */
   eventable(Collection);
 
-  Collection.prototype.add = Collection.prototype.push = function (instance) {
-    if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
-      throw new TypeError("Cannot add element to collection; it does not validate");
-    }
+  Collection.prototype.add = Collection.prototype.push = function () {
+    for (var i=0;i<arguments.length;i++) {
+      var curr = arguments[i];
 
-    // Otherwise we're good.
-    this[this.length++] = instance;
-    this.trigger('add', [instance]);
+      if ((this._type && !(curr instanceof this._type)) || this._validator(curr) === false) {
+        throw new TypeError("Cannot add element to collection; it does not validate");
+      }
+
+      // Otherwise we're good.
+      this[this.length++] = curr;
+      this.trigger('add', [curr]);
+    }
 
     return this.length;
   };
