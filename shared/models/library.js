@@ -24,7 +24,7 @@ define(['models/version', 'models/model'], function (Version, Model) {
     },
 
     collections: {
-      "versions": {
+      versions: {
         type: Version,
         validator: function (instance) {
           // Check the URL and ID of the versions are unique

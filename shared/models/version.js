@@ -30,7 +30,7 @@ define(['models/dependency', 'models/model', 'require'], function (Dependency, M
     },
 
     collections: {
-      "dependencies": Dependency
+      dependencies: Dependency
     }
   });
 });
