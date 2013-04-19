@@ -64,6 +64,12 @@ define(['models/eventable'], function (eventable) {
     }
   };
 
+  Collection.prototype.empty = function () {
+    while (this.length) {
+      this.remove(0);
+    }
+  };
+
   Collection.prototype.id = function (id) {
     // This is a shortcut for probably the most common form of ID
     if (typeof id === "number" && id - 1 < this.length && this[id - 1].get('id') === id) {
