@@ -30,7 +30,8 @@
   </head>
   <body>
     <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
-      <input type="hidden" name="id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
+      <input type="hidden" name="sketch_id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
+      <input type="hidden" name="revision_id" value="{{#if revision.properties.id}}{{revision.properties.id}}{{/if}}" />
 
       <input type="hidden" name="js_assets" value="[{&quot;type&quot;:&quot;js&quot;,&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:1,&quot;id&quot;:&quot;1&quot;},{&quot;parent&quot;:null,&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;}]" />
       <input type="hidden" name="css_assets" value="[{&quot;parent&quot;:null,&quot;type&quot;:&quot;css&quot;,&quot;library&quot;:1,&quot;id&quot;:&quot;2&quot;},{&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:2,&quot;type&quot;:&quot;css&quot;,&quot;id&quot;:&quot;1&quot;}]" />

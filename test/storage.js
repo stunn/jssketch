@@ -71,7 +71,9 @@ describe('Revision', function () {
     javascript: 'alert(\'Hello\');',
     css: 'body { background: red; }',
     html: '<h1>Hello</h1>',
-    doctype: '1'
+    doctype: '1',
+    parentSketchId: '12345',
+    parentRevisionId: 1
   };
 
   revisionHelper.updateRevisionFromHash(revision, app.config.get('doctypes'), dm, hash);

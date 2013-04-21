@@ -33,6 +33,16 @@ define(['models/model', 'models/asset'], function (Model, Asset) {
         type: Date,
         updateable: false,
         required: false
+      },
+      parentSketchId: {
+        type: 'string',
+        updateable: true,
+        required: false
+      },
+      parentRevisionId: {
+        type: 'number',
+        updateable: true,
+        required: false
       }
     },
 

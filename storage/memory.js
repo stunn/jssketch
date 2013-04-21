@@ -54,7 +54,7 @@ MemoryStorage.prototype.getRevision = function (revisionId, sketchId, callback) 
 
   if (revision) {
     revision = JSON.parse(revision.revision);
-    revision.revision.id = revisionId;
+    revision.revision.id = +revisionId;
 
     callback(null, revision.revision, revision.cssAssets, revision.jsAssets, sketchId);
   } else {
