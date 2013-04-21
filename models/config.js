@@ -88,7 +88,21 @@ var Config = new Model({
 
     version: {
       type: 'string',
-      fallback: require('../package.json').version,
+      fallback: (function () {
+        var path = require('path');
+        var fs = require('fs');
+        var vFile = path.join(__dirname, '..', 'VERSION');
+
+        if (fs.existsSync(vFile)) {
+          var contents = fs.readFileSync(vFile, 'utf8');
+
+          if (contents.length) {
+            return contents;
+          }
+        }
+
+        return require('../package.json').version;
+      }()),
       updateable: false
     },
 
