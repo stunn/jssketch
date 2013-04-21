@@ -6,7 +6,7 @@ var Ajax = broker.load('models/ajax');
 var Revision = broker.load('models/revision');
 var revisionHelper = broker.load('helpers/revision');
 
-var revision = new Revision;
+var revision = new Revision();
 var ajax = new Ajax({
   payload: JSON.stringify({
     test: 4
@@ -38,54 +38,54 @@ describe('AJAX', function () {
 describe('Revision', function () {
   var hash = {
     js_assets: JSON.stringify([{
-      "type": "js",
-      "parent": {
-        "type": "js",
-        "library": 2,
-        "id": "1"
+      type: 'js',
+      parent: {
+        type: 'js',
+        library: 2,
+        id: '1'
       },
-      "library": 1,
-      "id": "1"
+      library: 1,
+      id: '1'
     }, {
-      "parent": null,
-      "type": "js",
-      "library": 2,
-      "id": "1"
+      parent: null,
+      type: 'js',
+      library: 2,
+      id: '1'
     }]),
     css_assets: JSON.stringify([{
-      "parent": null,
-      "type": "css",
-      "library": 1,
-      "id": "2"
+      parent: null,
+      type: 'css',
+      library: 1,
+      id: '2'
     }, {
-      "library": 2,
-      "type": "css",
-      "id": "1",
-      "parent": {
-        "type": "js",
-        "library": 2,
-        "id": "1"
+      library: 2,
+      type: 'css',
+      id: '1',
+      parent: {
+        type: 'js',
+        library: 2,
+        id: '1'
       }
     }]),
     ajax: [ajax.get('id')],
-    javascript: "alert('Hello');",
-    css: "body { background: red; }",
-    html: "<h1>Hello</h1>",
-    doctype: "1"
+    javascript: 'alert(\'Hello\');',
+    css: 'body { background: red; }',
+    html: '<h1>Hello</h1>',
+    doctype: '1'
   };
 
   revisionHelper.updateRevisionFromHash(revision, app.config.get('doctypes'), dm, hash);
 
   function hashVsRevision(instance) {
-    ["doctype", "html", "css", "javascript"].forEach(function (key) {
+    ['doctype', 'html', 'css', 'javascript'].forEach(function (key) {
       hash[key].should.equal(instance.get(key));
     });
 
-    ["js", "css"].forEach(function (key) {
-      hash[key + "_assets"].every(function (asset) {
+    ['js', 'css'].forEach(function (key) {
+      hash[key + '_assets'].every(function (asset) {
         return instance[key + 'Assets'].some(function (candidate) {
-          return candidate.get('version').get('id') === asset.id
-            && candidate.get('version').get('library').get('id') === asset.library;
+          return candidate.get('version').get('id') === asset.id &&
+            candidate.get('version').get('library').get('id') === asset.library;
         });
       }).should.be.true;
     });

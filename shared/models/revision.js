@@ -2,32 +2,32 @@ define(['models/model', 'models/asset'], function (Model, Asset) {
   return new Model({
     properties: {
       id: {
-        type: "number",
+        type: 'number',
         updateable: false
       },
       javascript: {
-        type: "string",
+        type: 'string',
         updateable: true,
         required: true,
-        fallback: ""
+        fallback: ''
       },
       css: {
-        type: "string",
+        type: 'string',
         updateable: true,
         required: true,
-        fallback: ""
+        fallback: ''
       },
       html: {
-        type: "string",
+        type: 'string',
         updateable: true,
         required: true,
-        fallback: ""
+        fallback: ''
       },
       doctype: {
-        type: "string",
+        type: 'string',
         updateable: true,
         required: true,
-        fallback: "1"
+        fallback: '1'
       },
       createdAt: {
         type: Date,

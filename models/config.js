@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var path = require('path');
 
@@ -7,58 +7,58 @@ var Model = broker.load('models/model');
 
 function config(name) {
   return path.join(__dirname, '..', 'config', name + '.json');
-};
+}
 
 var Config = new Model({
   properties: {
     production: {
-      type: "boolean",
+      type: 'boolean',
       fallback: false,
       updateable: true
     },
 
     trust_proxy: {
-      type: "boolean",
+      type: 'boolean',
       fallback: false,
       updateable: true
     },
 
     base: {
-      type: "string",
-      fallback: "jssketch.local.mattlunn.me.uk",
+      type: 'string',
+      fallback: 'jssketch.local.mattlunn.me.uk',
       updateable: true
     },
 
     jail: {
-      type: "string",
-      fallback: "jssketch-other.local.mattlunn.me.uk",
+      type: 'string',
+      fallback: 'jssketch-other.local.mattlunn.me.uk',
       updateable: true
     },
 
     base_alias: {
-      type: "string",
+      type: 'string',
       updateable: true
     },
 
     jail_alias: {
-      type: "string",
+      type: 'string',
       updateable: true
     },
 
     port: {
-      type: "number",
+      type: 'number',
       fallback: 3000,
       updateable: true
     },
 
     prefix: {
-      type: "string",
-      fallback: "/",
+      type: 'string',
+      fallback: '/',
       updateable: true
     },
 
     storage: {
-      fallback: "memory",
+      fallback: 'memory',
       updateable: true
     },
 
@@ -69,41 +69,41 @@ var Config = new Model({
     },
 
     css_libraries_path: {
-      type: "string",
+      type: 'string',
       fallback: config('css_libraries'),
       updateable: true
     },
 
     js_libraries_path: {
-      type: "string",
+      type: 'string',
       fallback: config('js_libraries'),
       updateable: true
     },
 
     doctypes_path: {
-      type: "string",
+      type: 'string',
       fallback: config('doctypes'),
       updateable: true
     },
 
     version: {
-      type: "string",
+      type: 'string',
       fallback: require('../package.json').version,
       updateable: false
     },
 
     js_libraries: {
-      type: "object",
+      type: 'object',
       fallback: {}
     },
 
     css_libraries: {
-      type: "object",
+      type: 'object',
       fallback: {}
     },
 
     doctypes: {
-      type: "object",
+      type: 'object',
       fallback: {}
     }
   }
@@ -112,20 +112,20 @@ var Config = new Model({
 (function () {
 
   function url(base, port, prefix, to, absolute) {
-    var url = '';
+    var ret = '';
 
     if (absolute) {
-      url = 'http://' + base;
+      ret = 'http://' + base;
 
       if (port !== 80) {
-        url += ':' + port;
+        ret += ':' + port;
       }
     }
 
-    url += prefix || '';
+    ret += prefix || '';
 
-    // Prevent "//" between prefix and to
-    return url + (url.slice(-1) === "/" && to[0] === "/" ? to.slice(1) : to);
+    // Prevent '//' between prefix and to
+    return ret + (ret.slice(-1) === '/' && to[0] === '/' ? to.slice(1) : to);
   }
 
   Config.prototype.getBaseUrl = function (to, absolute) {

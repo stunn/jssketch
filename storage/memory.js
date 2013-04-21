@@ -1,16 +1,18 @@
 function MemoryStorage() {
   this._revisions = {};
   this._ajax = {};
-};
+}
 
 MemoryStorage.prototype._loadRevisionData = function (sketchId, revisionId) {
   return (this._revisions[sketchId] || [])[revisionId - 1];
 };
 
 MemoryStorage.prototype.saveSketch = function (sketch, callback, generator) {
-  if (typeof sketch.id === "undefined") {
+  if (typeof sketch.id === 'undefined') {
+    var id;
+
     while (true) {
-      var id = generator();
+      id = generator();
 
       if (!this._revisions.hasOwnProperty(id)) {
         this._revisions[id] = [];
@@ -61,7 +63,7 @@ MemoryStorage.prototype.getRevision = function (revisionId, sketchId, callback) 
 };
 
 MemoryStorage.prototype.saveAjax = function (ajax, callback, generator) {
-  if (typeof ajax.id === "undefined") {
+  if (typeof ajax.id === 'undefined') {
     var id;
 
     do {
@@ -109,4 +111,4 @@ MemoryStorage.prototype.saveAjaxForRevision = function (sketchId, revisionId, aj
 
 module.exports = function () {
   return new MemoryStorage();
-}
+};

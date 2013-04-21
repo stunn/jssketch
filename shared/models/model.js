@@ -32,14 +32,14 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    * passed when the model was defined.
    *
    * This is designed to be useful if you have different validation requirements
-   * for different parts of your application; e.g. you can validate a "Customer"
+   * for different parts of your application; e.g. you can validate a 'Customer'
    * according to one set of requirements in one part of your app, and by another
    * set of requirements in another part.
    *
    * {
    *   propName: {
    *     required: false,
-   *     type: "string",
+   *     type: 'string',
    *     validator: function () {
    *       return true;
    *     }
@@ -49,10 +49,10 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    *   }
    * }
    *
-   * required checks the property has a value other than "undefined". Default: false
+   * required checks the property has a value other than 'undefined'. Default: false
    *
-   * type checks against the values "typeof" result if "type" is a "string", or if
-   * type is a "function", "instanceof" is used to compare the value against the type.
+   * type checks against the values 'typeof' result if 'type' is a 'string', or if
+   * type is a 'function', 'instanceof' is used to compare the value against the type.
    *
    * validator performs arbritary validation. Return an error message as a string
    * if the validation fails, or some other value otherwise. First parameter to the
@@ -64,9 +64,9 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    * @throws Error describing a validation error.
    */
   Base.prototype.validate = function (profile) {
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
       profile = this._model.properties;
-    } else if (typeof profile !== "object" || profile === null) {
+    } else if (typeof profile !== 'object' || profile === null) {
       throw new Error('Profile passed to validate() must be an object');
     }
 
@@ -81,7 +81,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
       if (profile.hasOwnProperty(key)) {
         var settings = profile[key];
 
-        if (typeof properties[key] === "undefined") {
+        if (typeof properties[key] === 'undefined') {
           // Check required
           if (settings.required) {
             return error(key + ' is required.');
@@ -89,29 +89,29 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
         } else {
           // Check type
           switch (typeof settings.type) {
-            case "undefined":
-              break;
-            case "string":
-              if (typeof properties[key] !== settings.type) {
-                return error(key + ' must be a ' + settings.type);
-              }
+          case 'undefined':
+            break;
+          case 'string':
+            if (typeof properties[key] !== settings.type) {
+              return error(key + ' must be a ' + settings.type);
+            }
 
-              break;
-            case "function":
-              if (!(properties[key] instanceof settings.type)) {
-                return error(key + ' is not a instance of the correct type');
-              }
+            break;
+          case 'function':
+            if (!(properties[key] instanceof settings.type)) {
+              return error(key + ' is not a instance of the correct type');
+            }
 
-              break;
-            default:
-              throw new Error('type option for ' + key + ' is expected to be a string or function');
+            break;
+          default:
+            throw new Error('type option for ' + key + ' is expected to be a string or function');
           }
 
           // Check validator()
-          if (typeof settings.validator === "function") {
+          if (typeof settings.validator === 'function') {
             var result = settings.validator.call(this, properties[key], key);
 
-            if (typeof result === "string") {
+            if (typeof result === 'string') {
               return error(result);
             }
           }
@@ -120,35 +120,35 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
     }
 
     return true;
-  }
+  };
 
   /**
    * Updates either a single property on the object, or a hash of attributes.
    *
    * If a single property is to be updated, the first parameter should be the name
    * of the attribute, and the second should be the new value. The third parameter
-   * defaults to false, and is whether the "change" event for the update should be
+   * defaults to false, and is whether the 'change' event for the update should be
    * supressed.
    *
    * In the second case, the first parameter should be the hash which maps properties
    * to values. Properties which do not exist on this Model will be ignored. The
-   * second parameter is an optional array, which provides a "view" of which
+   * second parameter is an optional array, which provides a 'view' of which
    * parameters from the given hash will be used. By default, all will be. The
-   * array overrrides any "updateable" property on the model. The final parameter
-   * is "silent", which behaves exactly as it does for the first use case.
+   * array overrrides any 'updateable' property on the model. The final parameter
+   * is 'silent', which behaves exactly as it does for the first use case.
    *
    * @param key: Name of value to update, or a hash of multiple values.
    * @param value: The value to update to, or an array of which values to take
    *        from the hash.
-   * @param silent: Whether the update will fire the "change" event on the model
+   * @param silent: Whether the update will fire the 'change' event on the model
    * @return self
    */
   Base.prototype.set = function (key, value, silent) {
     var descriptors = this._model.properties;
 
-    if (typeof key === "object") {
+    if (typeof key === 'object') {
       var hash = key;
-      var isSilent = silent || (typeof value === "boolean" ? value : false);
+      var isSilent = silent || (typeof value === 'boolean' ? value : false);
       var isAccepted = (function () {
         if (Array.isArray(value)) {
           return function (key) {
@@ -159,7 +159,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
 
           return function (key) {
             return props.hasOwnProperty(key) && props[key].updateable;
-          }
+          };
         }
       }).apply(this, arguments);
 
@@ -167,26 +167,32 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
         if (descriptors.hasOwnProperty(key) && isAccepted(key)) {
           this.set(key, hash[key], true);
 
-          silent || this.trigger('change', key, true);
+          if (!isSilent) {
+            this.trigger('change', key, true);
+          }
         }
       }, this);
 
-      silent && this.trigger('change', '*');
+      if (!isSilent) {
+        this.trigger('change', '*');
+      }
     } else {
       var descriptor = descriptors[key];
 
-      if (typeof descriptor === "undefined") {
+      if (typeof descriptor === 'undefined') {
         throw new Error('Model does not have a property called ' + key);
       }
 
-      if (typeof value === "undefined") {
+      if (typeof value === 'undefined') {
         value = descriptor.fallback;
       }
 
       if (this.properties[key] !== value) {
         this.properties[key] = value;
 
-        silent || this.trigger('change', key);
+        if (!silent) {
+          this.trigger('change', key);
+        }
       }
     }
 
@@ -194,11 +200,11 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
   };
 
   /**
-   * Sets the given property to it's fallback value, or "undefined" if none was
+   * Sets the given property to it's fallback value, or 'undefined' if none was
    * given.
    *
    * @param key: The property to unset
-   * @param silent: Whether the "change" event will fire on the model. Default false.
+   * @param silent: Whether the 'change' event will fire on the model. Default false.
    * @return self;
    */
   Base.prototype.unset = function (key, silent) {
@@ -208,7 +214,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
   };
 
   /**
-   * Returns the current value of the "key" property. Throws an error if the key
+   * Returns the current value of the 'key' property. Throws an error if the key
    * doesn't exist.
    *
    * @param key: The parameter to retrieve
@@ -241,7 +247,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
     move(this._model.collections);
 
     return ret;
-  }
+  };
 
   /**
    * Creates a Constructor function for a new model. The settings in the example
@@ -277,11 +283,11 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
    * @return A constructor for the model.
    */
   return function (model) {
-    if (typeof model !== "object" && !model.hasOwnProperty('properties')) {
+    if (typeof model !== 'object' && !model.hasOwnProperty('properties')) {
       throw new Error('Model must be provided with properties');
     }
 
-    if (typeof model.collections !== "object") {
+    if (typeof model.collections !== 'object') {
       model.collections = {};
     }
 
@@ -289,13 +295,13 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
       var descriptors = this._model.properties;
 
       switch (typeof properties) {
-        case "object":
+      case 'object':
         break;
-        case "undefined":
-          properties = {};
+      case 'undefined':
+        properties = {};
         break;
-        default:
-          throw new Error('Properties must be an object, or left undefined');
+      default:
+        throw new Error('Properties must be an object, or left undefined');
       }
 
       defineProperty(this, 'properties', {
@@ -320,10 +326,12 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
         });
       }, this);
 
-      (typeof Object.seal === "function") && Object.seal(this);
+      if (typeof Object.seal === 'function') {
+        Object.seal(this);
+      }
     }
 
-    Constructor.prototype = new Base;
+    Constructor.prototype = new Base();
     Constructor.prototype._model = model;
 
     return Constructor;

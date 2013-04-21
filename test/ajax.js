@@ -19,7 +19,7 @@ describe('AJAX Web Requests', function () {
 
         try {
           response = JSON.parse(res.res.text);
-        } catch (e) {};
+        } catch (e) {}
 
         require('should').exist(response);
         response.should.have.property('success', true);

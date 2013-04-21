@@ -2,24 +2,24 @@ define(['models/dependency', 'models/model', 'require'], function (Dependency, M
   return new Model({
     properties: {
       id: {
-        type: "string",
+        type: 'string',
         updateable: false,
         required: true
       },
       name: {
-        type: "string",
+        type: 'string',
         updateable: false,
         required: true
       },
       url: {
-        type: "string",
+        type: 'string',
         updateable: false,
         required: true
       },
       library: {
         validator: function (el) {
           if (!(el instanceof require('models/library'))) {
-            return "Version does not belong to a library";
+            return 'Version does not belong to a library';
           }
 
           return true;

@@ -16,7 +16,7 @@ describe('Model Events', function () {
   var instance;
 
   before(function () {
-    instance = new Base;
+    instance = new Base();
   });
 
   it('should fire', function () {

@@ -13,11 +13,13 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "supertest": "0.5.1"
+    "supertest": "0.5.1",
+    "grunt": "~0.4.1",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-contrib-jshint": "~0.4.3"
   },
   "scripts": {
-    "test": "node test",
-    "build": "node build"
+    "test": "grunt test"
   },
   "bin": "./bin/jssketch"
 }

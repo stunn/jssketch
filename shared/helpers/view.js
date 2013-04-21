@@ -1,14 +1,14 @@
 define(function () {
   return function (Handlebars) {
     Handlebars.registerHelper('rel', function (url) {
-      var rel = "";
+      var rel = '';
 
-      switch (url.slice(url.lastIndexOf("."))) {
-        case ".less":
-          rel = "stylesheet/less";
+      switch (url.slice(url.lastIndexOf('.'))) {
+      case '.less':
+        rel = 'stylesheet/less';
         break;
-        default:
-          rel = "stylesheet";
+      default:
+        rel = 'stylesheet';
         break;
       }
 
@@ -32,14 +32,14 @@ define(function () {
      */
     Handlebars.registerHelper('iter', function(context, options) {
       var fn = options.fn, inverse = options.inverse;
-      var i = 0, ret = "", data;
+      var i = 0, ret = '', data;
 
       if (options.data) {
         data = Handlebars.createFrame(options.data);
       }
 
       if(context && typeof context === 'object') {
-        if(typeof context.length === "number"){
+        if(typeof context.length === 'number'){
           for(var j = context.length; i<j; i++) {
             if (data) { data.index = i; }
             ret = ret + fn(context[i], { data: data });

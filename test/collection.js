@@ -6,7 +6,7 @@ describe('Collection', function () {
     var collection = new Collection(Object);
     var fired = 0;
 
-    collection.on('add', function (element) {
+    collection.on('add', function () {
       fired++;
     });
 
