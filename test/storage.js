@@ -33,6 +33,15 @@ describe('AJAX', function () {
       done();
     });
   });
+
+  it('should handle invalid IDs correctly', function (done) {
+    app.client.loadAjax('iii', function (err) {
+      (err === null).should.be.false;
+      false.should.equal(err.isApplication);
+
+      done();
+    });
+  });
 });
 
 describe('Revision', function () {
@@ -120,6 +129,24 @@ describe('Revision', function () {
       done();
     });
   });
+
+  it('should handle non-existant revisions', function (done) {
+    app.client.loadRevision(100, sketchId, function (err) {
+      (err === null).should.be.false;
+      false.should.equal(err.isApplication);
+
+      done();
+    });
+  });
+
+  it('should handle non-existant sketchs', function (done) {
+    app.client.loadRevision(1, 'iiiii', function (err) {
+      (err === null).should.be.false;
+      false.should.equal(err.isApplication);
+
+      done();
+    });
+  });
 });
 
 describe('AJAX Revision', function () {
@@ -143,6 +170,24 @@ describe('AJAX Revision', function () {
           return candidate.get('id') === ajax.get('id');
         });
       }).should.be.true;
+
+      done();
+    });
+  });
+
+  it('should handle invalid revision IDs correctly', function (done) {
+    app.client.loadAjaxForRevision(sketchId, 100, function (err) {
+      (err === null).should.be.false;
+      false.should.equal(err.isApplication);
+
+      done();
+    });
+  });
+
+  it('should handle invalid sketch IDs correctly', function (done) {
+    app.client.loadAjaxForRevision('iiiii', 1, function (err) {
+      (err === null).should.be.false;
+      false.should.equal(err.isApplication);
 
       done();
     });

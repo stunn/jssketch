@@ -3,28 +3,26 @@ function MemoryStorage() {
   this._ajax = {};
 }
 
+MemoryStorage.prototype = require('./storage').create();
+
 MemoryStorage.prototype._loadRevisionData = function (sketchId, revisionId) {
   return (this._revisions[sketchId] || [])[revisionId - 1];
 };
 
 MemoryStorage.prototype.saveSketch = function (sketch, callback, generator) {
-  if (typeof sketch.id === 'undefined') {
-    var id;
+  var id;
 
-    while (true) {
-      id = generator();
+  while (true) {
+    id = generator();
 
-      if (!this._revisions.hasOwnProperty(id)) {
-        this._revisions[id] = [];
+    if (!this._revisions.hasOwnProperty(id)) {
+      this._revisions[id] = [];
 
-        break;
-      }
+      break;
     }
-
-    callback(null, id);
-  } else {
-    callback(new Error('Sketch already has an ID'));
   }
+
+  callback(null, id);
 };
 
 MemoryStorage.prototype.getSketch = function (id, callback) {
@@ -33,7 +31,7 @@ MemoryStorage.prototype.getSketch = function (id, callback) {
       id: id
     });
   } else {
-    callback(new Error(id + ' does not exist'));
+    callback(new this.Error(id + ' does not exist', false));
   }
 };
 
@@ -58,23 +56,19 @@ MemoryStorage.prototype.getRevision = function (revisionId, sketchId, callback) 
 
     callback(null, revision.revision, revision.cssAssets, revision.jsAssets, sketchId);
   } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
+    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
   }
 };
 
 MemoryStorage.prototype.saveAjax = function (ajax, callback, generator) {
-  if (typeof ajax.id === 'undefined') {
-    var id;
+  var id;
 
-    do {
-      id = generator();
-    } while (this._ajax.hasOwnProperty(id));
+  do {
+    id = generator();
+  } while (this._ajax.hasOwnProperty(id));
 
-    this._ajax[id] = JSON.stringify(ajax);
-    callback(null, id);
-  } else {
-    callback(new Error('AJAX Model already has a ID'));
-  }
+  this._ajax[id] = JSON.stringify(ajax);
+  callback(null, id);
 };
 
 MemoryStorage.prototype.getAjax = function (id, callback) {
@@ -84,7 +78,7 @@ MemoryStorage.prototype.getAjax = function (id, callback) {
     parsed.id = id;
     callback(null, parsed);
   } else {
-    callback(new Error('No Ajax model with ID of ' + id + ' exists'));
+    callback(new this.Error('No Ajax model with ID of ' + id + ' exists', false));
   }
 };
 
@@ -94,7 +88,7 @@ MemoryStorage.prototype.getAjaxForRevision = function (sketchId, revisionId, cal
   if (revision) {
     callback(null, JSON.parse(revision.ajax));
   } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
+    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
   }
 };
 
@@ -105,7 +99,7 @@ MemoryStorage.prototype.saveAjaxForRevision = function (sketchId, revisionId, aj
     revision.ajax = JSON.stringify(ajaxRequests);
     callback(null);
   } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
+    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
   }
 };
 
