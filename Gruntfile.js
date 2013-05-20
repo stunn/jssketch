@@ -110,6 +110,13 @@ module.exports = function (grunt) {
     // Default is to run all tests
     if (!suites.length) {
       suites.push('**/*');
+
+      // For Travis, we want to test all storage types as well. Normally however,
+      // memory will be sufficient
+      if (!process.env.TRAVIS) {
+        suites.push('!storage/*');
+        suites.push('storage/memory');
+      }
     }
 
     // Just ignore the .js files that are there to help us.
