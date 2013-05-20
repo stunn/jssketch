@@ -173,23 +173,5 @@ module.exports.run = function (app) {
         done();
       });
     });
-
-    it('should handle invalid revision IDs correctly', function (done) {
-      app.client.loadAjaxForRevision(sketchId, 100, function (err) {
-        (err === null).should.be.false;
-        false.should.equal(err.isApplication);
-
-        done();
-      });
-    });
-
-    it('should handle invalid sketch IDs correctly', function (done) {
-      app.client.loadAjaxForRevision('iiiii', 1, function (err) {
-        (err === null).should.be.false;
-        false.should.equal(err.isApplication);
-
-        done();
-      });
-    });
   });
 };

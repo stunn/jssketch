@@ -83,24 +83,19 @@ MemoryStorage.prototype.getAjax = function (id, callback) {
 };
 
 MemoryStorage.prototype.getAjaxForRevision = function (sketchId, revisionId, callback) {
-  var revision = this._loadRevisionData(sketchId, revisionId);
+  var that = this;
 
-  if (revision) {
-    callback(null, JSON.parse(revision.ajax));
-  } else {
-    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
-  }
+  callback(null, JSON.parse(this._loadRevisionData(sketchId, revisionId).ajax).map(function (id) {
+    return JSON.parse(that._ajax[id]);
+  }));
 };
 
 MemoryStorage.prototype.saveAjaxForRevision = function (sketchId, revisionId, ajaxRequests, callback) {
-  var revision = this._loadRevisionData(sketchId, revisionId);
+  this._loadRevisionData(sketchId, revisionId).ajax = JSON.stringify(ajaxRequests.map(function (obj) {
+    return obj.id;
+  }));
 
-  if (revision) {
-    revision.ajax = JSON.stringify(ajaxRequests);
-    callback(null);
-  } else {
-    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
-  }
+  callback(null);
 };
 
 module.exports = function () {

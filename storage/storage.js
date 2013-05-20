@@ -95,26 +95,25 @@ Storage.prototype.saveAjax = function (ajax, callback, generator) {};
 Storage.prototype.getAjax = function (id, callback) {};
 
 /**
- * Retrieves the AJAX IDs that are associated to a particular Revision. There
- * is no guarantee that the sketch or revision IDs exist. If the ID combination
- * is invalid, raise a non-storage error. If no AJAX entries exist, provide the
- * callback with an empty array.
+ * Retrieves the simple objects for AJAX requests that are associated to a particular
+ * Revision. The sketch and revision IDs are guaranteed to be valid. If no AJAX entries
+ * exist, provide the callback with an empty array.
  *
  * @param sketchId A string of the sketch ID we want to get AJAX entries for
  * @param revisionId A number representation of the revision
- * @param callback(err, array) array should be a array of AJAX ids for the
- *                             AJAX entries. If non exist, provide an empty array
+ * @param callback(err, array) array should be a array of simple AJAX objects.
+ *                             If non exist, provide an empty array.
  */
 Storage.prototype.getAjaxForRevision = function (sketchId, revisionId, callback) {};
 
 /**
- * Saves the AJAX IDs that are associated to a particular Revision. Both the
- * revision and sketch ID's will be valid, and the AJAX IDs will have been validated
- * for existance.
+ * Associates the AJAX objects with the Revision provided. Both the revision and
+ * sketch ID's will be valid, and the AJAX IDs will have been validated for existance.
  *
  * @param sketchId A string of the sketch ID we want to save AJAX entries for
  * @param revisionId A number representation of the revision
- * @param ajaxRequests An array of string IDs of the AJAX requests we want to save
+ * @param ajaxRequests An array of AJAX simple objects we want to associate with
+ *                     the revision.
  * @param callback(err)
  */
 Storage.prototype.saveAjaxForRevision = function (sketchId, revisionId, ajaxRequests, callback) {};
