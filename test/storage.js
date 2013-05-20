@@ -1,4 +1,4 @@
-var app = require('./support/server').app;
+var app = require('./support/app').create();
 var dm = app.client.dm;
 
 var broker = require('../lib/broker');

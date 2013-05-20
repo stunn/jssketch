@@ -1,4 +1,5 @@
-var app = require('./support/server');
+var request = require('./support/request');
+var app = require('./support/app').create();
 
 describe('AJAX Web Requests', function () {
   var payload = {
@@ -7,7 +8,7 @@ describe('AJAX Web Requests', function () {
   var id;
 
   it('should create successfully', function (done) {
-    app.postBase('/ajax/create').send({
+    request.postBase(app, '/ajax/create').send({
       payload: JSON.stringify({
         test: 1
       }),
@@ -33,7 +34,7 @@ describe('AJAX Web Requests', function () {
   });
 
   it('should retrieve successfully', function (done) {
-    app.getJail('/ajax/' + id).expect(200).expect('Content-Type', 'application/json').end(function (err, res) {
+    request.getJail(app, '/ajax/' + id).expect(200).expect('Content-Type', 'application/json').end(function (err, res) {
       if (!err) {
         (function () {
           payload.should.be.eql(JSON.parse(res.res.text));
