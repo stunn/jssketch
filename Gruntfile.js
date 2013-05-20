@@ -90,22 +90,35 @@ module.exports = function (grunt) {
     });
   });
 
+  /**
+   * Runs the specified test suites. If no targets are provided, all test suites
+   * are ran. Targets can restrict which test suites to run.
+   *
+   * The command `grunt test:storage:model` will run only the storage and model suites
+   * The command `grunt test:model* will run all suites starting with the word `model`
+   */
   grunt.registerTask('test', function () {
+    var suites = [].slice.call(arguments, 0);
     var async = this.async();
     var Mocha = require('mocha');
-    var path = require('path');
-    var fs = require('fs');
-
-    require('should');
-
     var mocha = new Mocha({
       reporter: 'spec'
     });
 
-    fs.readdirSync('test').filter(function (file) {
-      return path.extname(file) === '.js';
-    }).forEach(function (file) {
-      mocha.addFile(path.join('test', file));
+    require('should');
+
+    // Default is to run all tests
+    if (!suites.length) {
+      suites.push('**/*');
+    }
+
+    // Just ignore the .js files that are there to help us.
+    suites.push('!config/*', '!support/*');
+
+    grunt.file.expand(suites.map(function (match) {
+      return './test/' + match + '.js';
+    })).forEach(function (file) {
+      mocha.addFile(file);
     });
 
     mocha.run(function (failures) {
@@ -113,6 +126,5 @@ module.exports = function (grunt) {
     });
   });
 
-  grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('build', ['requirejs', 'buildcss']);
 };
