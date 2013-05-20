@@ -15,7 +15,7 @@ module.exports.create = function (config, combine) {
   }
 
   if (combine) {
-    config = utils.merge({}, require('../config/' + fallback), config);
+    config = utils.extend({}, require('../config/' + fallback), config);
   }
 
   return app(config);
