@@ -17,15 +17,15 @@ Storage.prototype.install = function (callback) {
 };
 
 Storage.prototype.Error = function (information, isStorage) {
-  Error.call(this, information);
+  var e = new Error(information);
 
-  Object.defineProperty(this, 'isStorage', {
+  Object.defineProperty(e, 'isStorage', {
     enumerable: true,
     value: !!isStorage
   });
-};
 
-Storage.prototype.Error.prototype = new Error();
+  return e;
+};
 
 /**
  * Gets provided with a new sketch that has not been saved before. Implementors
