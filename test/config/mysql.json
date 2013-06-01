@@ -1,0 +1,8 @@
+{
+  "storage": "mysql",
+  "storage_args": [{
+    "user": "root",
+    "password": "",
+    "database": "jssketch_test"
+  }]
+}
