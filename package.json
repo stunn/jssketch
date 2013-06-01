@@ -9,7 +9,7 @@
     "optimist": "0.5.0",
     "mini-fier": "git://github.com/mattlunn/mini-fier.git#e6a49a804951c36ae49e014a1e003dcaa63fd171",
     "requirejs": "2.1.4",
-    "node-mysql": "~2.0.0"
+    "mysql": "~2.0.0"
   },
   "devDependencies": {
     "mocha": "*",
