@@ -6,6 +6,16 @@ function Storage() {
 
 }
 
+/**
+ * Handler for any install scripts etc. that need to be ran prior to using
+ * the application. (e.g. create tables etc.).
+ *
+ * @param callback(err)
+ */
+Storage.prototype.install = function (callback) {
+  callback(null);
+};
+
 Storage.prototype.Error = function (information, isStorage) {
   Error.call(this, information);
 
