@@ -98,6 +98,7 @@ module.exports = function (grunt) {
    * The command `grunt test:model* will run all suites starting with the word `model`
    */
   grunt.registerTask('test', function () {
+    var testDir = './test/';
     var suites = [].slice.call(arguments, 0);
     var async = this.async();
     var Mocha = require('mocha');
@@ -122,10 +123,12 @@ module.exports = function (grunt) {
     // Just ignore the .js files that are there to help us.
     suites.push('!config/*', '!support/*');
 
-    grunt.file.expand(suites.map(function (match) {
-      return './test/' + match + '.js';
+    grunt.file.expand({
+      cwd: testDir
+    }, suites.map(function (match) {
+      return match + '.js';
     })).forEach(function (file) {
-      mocha.addFile(file);
+      mocha.addFile(testDir + file);
     });
 
     mocha.run(function (failures) {
