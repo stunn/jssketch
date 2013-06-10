@@ -1,25 +1,27 @@
 define(['models/eventable'], function (eventable) {
   /**
-   * As a shortcut, "prefs" can be the object we want to collect, as well as
+   * As a shortcut, 'prefs' can be the object we want to collect, as well as
    * the normal options object.
    */
   function Collection(prefs) {
     switch (typeof prefs) {
-      case "function":
-        this._type = prefs;
-        break;
-      case "object":
-        if (prefs !== "null") {
-          this._type = prefs.type; // or undefined
-          this._validator = prefs.validator;
+    case 'function':
+      this._type = prefs;
+      break;
+    case 'object':
+      if (prefs !== 'null') {
+        this._type = prefs.type; // or undefined
+        this._validator = prefs.validator;
 
-          break;
-        }
-      default:
-        throw new Error('Collection must be passed either a settings object or a Constructor');
+        break;
+      }
+
+      /* falls through */
+    default:
+      throw new Error('Collection must be passed either a settings object or a Constructor');
     }
 
-    if (typeof this._validator !== "function") {
+    if (typeof this._validator !== 'function') {
       this._validator = function () {
         return true;
       };
@@ -33,20 +35,24 @@ define(['models/eventable'], function (eventable) {
    */
   eventable(Collection);
 
-  Collection.prototype.add = Collection.prototype.push = function (instance) {
-    if (this._type && !(instance instanceof this._type) || this._validator(instance) === false) {
-      throw new TypeError("Cannot add element to collection; it does not validate");
-    }
+  Collection.prototype.add = Collection.prototype.push = function () {
+    for (var i=0;i<arguments.length;i++) {
+      var curr = arguments[i];
 
-    // Otherwise we're good.
-    this[this.length++] = instance;
-    this.trigger('add', [instance]);
+      if ((this._type && !(curr instanceof this._type)) || this._validator(curr) === false) {
+        throw new TypeError('Cannot add element to collection; it does not validate');
+      }
+
+      // Otherwise we're good.
+      this[this.length++] = curr;
+      this.trigger('add', [curr]);
+    }
 
     return this.length;
   };
 
   Collection.prototype.remove = function (el) {
-    if (typeof el === "number") {
+    if (typeof el === 'number') {
       var removed = [].splice.call(this, i, 1)[0];
 
       this.trigger('remove', [removed]);
@@ -60,9 +66,15 @@ define(['models/eventable'], function (eventable) {
     }
   };
 
+  Collection.prototype.empty = function () {
+    while (this.length) {
+      this.remove(0);
+    }
+  };
+
   Collection.prototype.id = function (id) {
     // This is a shortcut for probably the most common form of ID
-    if (typeof id === "number" && id - 1 < this.length && this[id - 1].get('id') === id) {
+    if (typeof id === 'number' && id - 1 < this.length && this[id - 1].get('id') === id) {
       return this[id - 1];
     }
 
@@ -76,7 +88,7 @@ define(['models/eventable'], function (eventable) {
     return null;
   };
 
-  ["some", "every", "forEach", "reduce", "reduceRight", "map"].forEach(function (key) {
+  ['some', 'every', 'forEach', 'reduce', 'reduceRight', 'map'].forEach(function (key) {
     Collection.prototype[key] = Array.prototype[key];
   });
 

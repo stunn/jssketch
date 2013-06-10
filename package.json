@@ -5,18 +5,23 @@
   "dependencies": {
     "utils": "git://github.com/mattlunn/node-util.git",
     "express": "3.0.6",
-    "hbs": "2.0.1",
-    "commander": "1.1.1",
-    "mini-fier": "git://github.com/mattlunn/mini-fier.git#1ae9083093cabd273340e2c5c984e9908894cdbf",
-    "requirejs": "2.1.4"
+    "hbs": "2.1.0",
+    "optimist": "0.5.0",
+    "mini-fier": "git://github.com/mattlunn/mini-fier.git#e6a49a804951c36ae49e014a1e003dcaa63fd171",
+    "requirejs": "2.1.4",
+    "mysql": "~2.0.0"
   },
   "devDependencies": {
     "mocha": "*",
-    "should": "*"
+    "should": "*",
+    "supertest": "0.5.1",
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-contrib-jshint": "~0.4.3"
   },
   "scripts": {
-    "test": "node test",
-    "build": "node build"
+    "test": "grunt test"
   },
   "bin": "./bin/jssketch"
 }

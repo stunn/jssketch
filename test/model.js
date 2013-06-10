@@ -1,19 +1,22 @@
 var broker = require('../lib/broker');
 var Model = broker.load('models/model');
-var should = require('should');
 
 describe('Model', function () {
   var Base = new Model({
     properties: {
       id: {
-        type: "number",
+        type: 'number',
         updateable: false,
         fallback: -1,
         validator: function (val) {
           if (!(10 <= val && 10 <= 20)) {
-            return "Value must be in range";
+            return 'Value must be in range';
           }
         }
+      },
+
+      name: {
+        type: 'string'
       },
 
       array: {
@@ -32,14 +35,14 @@ describe('Model', function () {
   });
 
   it('should accept updatable via direct set', function () {
-    var instance = new Base;
+    var instance = new Base();
 
     instance.set('id', 4);
     instance.get('id').should.be.equal(4);
   });
 
   it('should not accept updatable via set with hash', function () {
-    var instance = new Base;
+    var instance = new Base();
 
     instance.set({
       id: 4
@@ -81,5 +84,39 @@ describe('Model', function () {
     });
 
     instance.validate().should.not.be.a('string');
+  });
+
+  it('should throw when getting a non-existant key', function () {
+    var instance = new Base();
+
+    (function () {
+      instance.get('nothing');
+    }).should.throw();
+  });
+
+  it('should not throw when getting a property which is undefined', function () {
+    var instance = new Base();
+
+    (function () {
+      instance.get('name');
+    }).should.not.throw();
+  });
+
+  it('should throw when directly setting a non-existant key', function () {
+    var instance = new Base();
+
+    (function () {
+      instance.set('nothing', 5);
+    }).should.throw();
+  });
+
+  it('shouldn\'t throw when setting a non-existant key via hash', function () {
+    var instance = new Base();
+
+    (function () {
+      instance.set({
+        nothing: 5
+      });
+    }).should.not.throw();
   });
 });

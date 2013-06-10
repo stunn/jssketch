@@ -5,12 +5,12 @@
 
     <title>jsSketch | {{#if sketch.properties.id}}{{sketch.properties.id}} v{{revision.properties.id}} {{else}}Home{{/if}}</title>
 
-    {{#iter stylesheets}}<link rel="{{rel this}}" href="{{base this ../settings}}" />
+    {{#iter stylesheets}}<link rel="{{rel this}}" href="{{asset this}}" />
     {{/iter}}
     <!-- https://github.com/stunn/jssketch/issues/6 -->
-    <script>(Object.keys || document.write("<script src=\"{{base "/js/es5-shim.js"}}\"><\/script>"));</script>
+    <script>(Object.keys || document.write("<script src=\"{{asset "/js/es5-shim.js"}}\"><\/script>"));</script>
 
-    <script src="/js/require.js"></script>
+    <script src="{{asset "/js/require.js"}}"></script>
     <script>
       require.config({{jsonify requirejs}});
 
@@ -30,7 +30,8 @@
   </head>
   <body>
     <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
-      <input type="hidden" name="id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
+      <input type="hidden" name="sketch_id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
+      <input type="hidden" name="revision_id" value="{{#if revision.properties.id}}{{revision.properties.id}}{{/if}}" />
 
       <input type="hidden" name="js_assets" value="[{&quot;type&quot;:&quot;js&quot;,&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:1,&quot;id&quot;:&quot;1&quot;},{&quot;parent&quot;:null,&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;}]" />
       <input type="hidden" name="css_assets" value="[{&quot;parent&quot;:null,&quot;type&quot;:&quot;css&quot;,&quot;library&quot;:1,&quot;id&quot;:&quot;2&quot;},{&quot;parent&quot;:{&quot;type&quot;:&quot;js&quot;,&quot;library&quot;:2,&quot;id&quot;:&quot;1&quot;},&quot;library&quot;:2,&quot;type&quot;:&quot;css&quot;,&quot;id&quot;:&quot;1&quot;}]" />

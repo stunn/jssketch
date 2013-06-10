@@ -24,7 +24,7 @@ define(['models/version'], function (Version) {
    * @return Version instance.
    */
   DependencyManager.prototype.createVersion = function (id) {
-    if (typeof id === "string" && /^http(s)?:\/\/\S+$/.test(id)) {
+    if (typeof id === 'string' && /^http(s)?:\/\/\S+$/.test(id)) {
       return new Version({
         id: id,
         url: id,
@@ -41,7 +41,7 @@ define(['models/version'], function (Version) {
     }
 
     return false;
-  }
+  };
 
   /**
    * Returns an array of libraries which are of the given type
@@ -57,7 +57,7 @@ define(['models/version'], function (Version) {
     }
 
     return [];
-  }
+  };
 
   DependencyManager.prototype.addLibrary = function (library) {
     if (!this._libraries.hasOwnProperty(library.get('type'))) {
@@ -75,12 +75,12 @@ define(['models/version'], function (Version) {
    * @return The library, or undefined if non existed
    */
   DependencyManager.prototype.getLibrary = function (type, id) {
-    var type = this._libraries[type];
+    type = this._libraries[type];
 
-    if (typeof type === "object" && type.hasOwnProperty(id)) {
+    if (typeof type === 'object' && type.hasOwnProperty(id)) {
       return type[id];
     }
-  }
+  };
 
   /**
    * Returns a Version Model for the specified type, library & id, or undefined if
@@ -103,7 +103,7 @@ define(['models/version'], function (Version) {
         }
       }
     }
-  }
+  };
 
   /**
    * Returns an Array of the types which have been registered within the DependencyManager
@@ -112,7 +112,7 @@ define(['models/version'], function (Version) {
    */
   DependencyManager.prototype.getRegisteredTypes = function () {
     return Object.keys(this._libraries);
-  }
+  };
 
   return DependencyManager;
 });

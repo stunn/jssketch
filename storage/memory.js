@@ -1,28 +1,28 @@
 function MemoryStorage() {
   this._revisions = {};
   this._ajax = {};
-};
+}
+
+MemoryStorage.prototype = require('./storage').create();
 
 MemoryStorage.prototype._loadRevisionData = function (sketchId, revisionId) {
   return (this._revisions[sketchId] || [])[revisionId - 1];
 };
 
 MemoryStorage.prototype.saveSketch = function (sketch, callback, generator) {
-  if (typeof sketch.id === "undefined") {
-    while (true) {
-      var id = generator();
+  var id;
 
-      if (!this._revisions.hasOwnProperty(id)) {
-        this._revisions[id] = [];
+  while (true) {
+    id = generator();
 
-        break;
-      }
+    if (!this._revisions.hasOwnProperty(id)) {
+      this._revisions[id] = [];
+
+      break;
     }
-
-    callback(null, id);
-  } else {
-    callback(new Error('Sketch already has an ID'));
   }
+
+  callback(null, id);
 };
 
 MemoryStorage.prototype.getSketch = function (id, callback) {
@@ -31,7 +31,7 @@ MemoryStorage.prototype.getSketch = function (id, callback) {
       id: id
     });
   } else {
-    callback(new Error(id + ' does not exist'));
+    callback(new this.Error(id + ' does not exist', false));
   }
 };
 
@@ -52,58 +52,52 @@ MemoryStorage.prototype.getRevision = function (revisionId, sketchId, callback) 
 
   if (revision) {
     revision = JSON.parse(revision.revision);
-    revision.revision.id = revisionId;
+    revision.revision.id = +revisionId;
 
     callback(null, revision.revision, revision.cssAssets, revision.jsAssets, sketchId);
   } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
+    callback(new this.Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist', false));
   }
 };
 
 MemoryStorage.prototype.saveAjax = function (ajax, callback, generator) {
-  if (typeof ajax.id === "undefined") {
-    var id;
+  var id;
 
-    do {
-      id = generator();
-    } while (this._ajax.hasOwnProperty(id));
+  do {
+    id = generator();
+  } while (this._ajax.hasOwnProperty(id));
 
-    this._ajax[id] = JSON.stringify(ajax);
-    callback(null, id);
-  } else {
-    callback(new Error('AJAX Model already has a ID'));
-  }
+  this._ajax[id] = JSON.stringify(ajax);
+  callback(null, id);
 };
 
 MemoryStorage.prototype.getAjax = function (id, callback) {
   if (this._ajax.hasOwnProperty(id)) {
-    callback(null, JSON.parse(this._ajax[id]));
+    var parsed = JSON.parse(this._ajax[id]);
+
+    parsed.id = id;
+    callback(null, parsed);
   } else {
-    callback(new Error('No Ajax model with ID of ' + id + ' exists'));
+    callback(new this.Error('No Ajax model with ID of ' + id + ' exists', false));
   }
 };
 
 MemoryStorage.prototype.getAjaxForRevision = function (sketchId, revisionId, callback) {
-  var revision = this._loadRevisionData(sketchId, revisionId);
+  var that = this;
 
-  if (revision) {
-    callback(null, JSON.parse(revision.ajax));
-  } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
-  }
+  callback(null, JSON.parse(this._loadRevisionData(sketchId, revisionId).ajax).map(function (id) {
+    return JSON.parse(that._ajax[id]);
+  }));
 };
 
 MemoryStorage.prototype.saveAjaxForRevision = function (sketchId, revisionId, ajaxRequests, callback) {
-  var revision = this._loadRevisionData(sketchId, revisionId);
+  this._loadRevisionData(sketchId, revisionId).ajax = JSON.stringify(ajaxRequests.map(function (obj) {
+    return obj.id;
+  }));
 
-  if (revision) {
-    revision.ajax = JSON.stringify(ajaxRequests);
-    callback(null);
-  } else {
-    callback(new Error('v' + revisionId + ' of sketch ' + sketchId + ' does not exist'));
-  }
+  callback(null);
 };
 
 module.exports = function () {
   return new MemoryStorage();
-}
+};

@@ -1,25 +1,48 @@
 #!/usr/bin/env node
 
-var program = require('commander');
-var utils = require('utils');
-var path = require('path');
+var app = require('../lib/app');
+var program = require('optimist').options('config', {
+  alias: 'c',
+  'default': '../config/config.json',
+}).options('help', {
+  alias: 'h'
+});
+var argv = program.argv;
 
-var jssketch = require('../lib/app');
-
-program.option('-c, --config <file>', 'Path to the config file', path.join(__dirname, '..', 'config', 'config.json'))
-       .option('--no-build', 'Does not minify CSS and JS files prior to launching application')
-       .parse(process.argv);
-
-var app = jssketch(utils.readJsonFileSync(program.config));
-
-if (program.build) {
-  app.build(function (err) {
-    if (err) {
-      throw err;
-    }
-    
-    app.start();
-  });
+// If help was requested, show it then exit. Otherwise, look at booting up the
+// application.
+if (argv.help) {
+  program.showHelp();
 } else {
-  app.start();
+  var instance = app(require(argv.config));
+
+  /**
+   * Only start the application if it was requested, or if no other commands
+   * were presented (i.e. "start" is the default behaviour).
+   */
+  function start() {
+    if (!argv._.length || argv._.indexOf('start') !== -1) {
+      instance.start();
+    }
+  }
+
+  // If "install" was specified, run the install script first. Install has a
+  // async API, so register callback as "start".
+  //
+  // If it wasn't specified, the only other valid option is to "start" the
+  // application.
+  //
+  // start() checks to see whether the conditions to run "start"
+  // are met, and starts the application if necessary.
+  if (argv._.indexOf('install') !== -1) {
+    instance.install(function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        start();
+      }
+    });
+  } else {
+    start();
+  }
 }

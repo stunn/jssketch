@@ -1,5 +1,4 @@
 var broker = require('../lib/broker');
-var should = require('should');
 
 var dmHelper = broker.load('helpers/dm');
 var utils = require('utils');

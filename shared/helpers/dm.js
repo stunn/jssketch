@@ -1,7 +1,7 @@
 define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], function (DependencyManager, Dependency, Library, Version) {
 
   function fromSerializedForm(structure) {
-    var dm = new DependencyManager;
+    var dm = new DependencyManager();
 
     function findOrCreateLibrary(type, id) {
       var existing = dm.getLibrary(type, id);
@@ -9,7 +9,7 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
       if (existing) {
         return existing;
       } else {
-        var library = new Library;
+        var library = new Library();
         var libraryRep = (function () {
           var libraries = structure[type];
 
@@ -40,8 +40,8 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
             library.versions.add(version);
           } else {
             throw new Error('Version for ' + library.name + ' with ID of ' +
-                             version.id + ' could not validate because "' +
-                             version.validate() + '"');
+                             version.id + ' could not validate because \'' +
+                             version.validate() + '\'');
           }
         });
 
@@ -49,8 +49,8 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
           dm.addLibrary(library);
         } else {
           throw new Error('Library of type ' + type + ' with ID of ' +
-                           id + ' could not validate because "' +
-                           library.validate() + '"');
+                           id + ' could not validate because \'' +
+                           library.validate() + '\'');
         }
 
         libraryRep.versions.forEach(function (versionRep) {
@@ -58,7 +58,7 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
 
           versionRep.dependencies.forEach(function (dependencyRep) {
             var libraryDependency = findOrCreateLibrary(dependencyRep.type, dependencyRep.library);
-            var dependency = new Dependency;
+            var dependency = new Dependency();
             var minVersion = dependencyRep.minVersion;
             var maxVersion = dependencyRep.maxVersion;
 
@@ -87,15 +87,15 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
               version.dependencies.add(dependency);
             } else {
               throw new Error('Dependency for version ' + version.id + ' of ' +
-                               library.name + ' could not validate because "' +
-                               dependency.validate() + '"');
+                               library.name + ' could not validate because \'' +
+                               dependency.validate() + '\'');
             }
           });
         });
 
         return library;
-      };
-    };
+      }
+    }
 
     Object.keys(structure).forEach(function (type) {
       structure[type].forEach(function (libraryRep) {
@@ -104,7 +104,7 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
     });
 
     return dm;
-  };
+  }
 
   function toSerializedForm(dm) {
     var types = {};
@@ -150,7 +150,7 @@ define(['lib/dm', 'models/dependency', 'models/library', 'models/version'], func
     });
 
     return types;
-  };
+  }
 
   /**
    *

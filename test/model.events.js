@@ -1,6 +1,5 @@
 var broker = require('../lib/broker');
 var Model = broker.load('models/model');
-var should = require('should');
 
 describe('Model Events', function () {
   var Base = new Model({
@@ -17,7 +16,7 @@ describe('Model Events', function () {
   var instance;
 
   before(function () {
-    instance = new Base;
+    instance = new Base();
   });
 
   it('should fire', function () {

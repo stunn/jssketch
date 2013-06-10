@@ -2,16 +2,16 @@ define(['models/model', 'require'], function (Model, require) {
   return new Model({
     properties: {
       required: {
-        type: "boolean",
+        type: 'boolean',
         updateable: false,
         fallback: true
       },
       isExplicitMinVersion: {
-        type: "boolean",
+        type: 'boolean',
         required: true
       },
       isExplicitMaxVersion: {
-        type: "boolean",
+        type: 'boolean',
         required: true
       },
       library: {

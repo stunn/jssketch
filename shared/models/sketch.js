@@ -2,7 +2,7 @@ define(['models/model'], function (Model) {
   return new Model({
     properties: {
       id: {
-        type: "string",
+        type: 'string',
         updateable: false
       }
     }
