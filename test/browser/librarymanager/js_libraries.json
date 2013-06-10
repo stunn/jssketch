@@ -1,0 +1,46 @@
+[{
+  "id": 1,
+  "name": "jQuery",
+  "defaultVersion": "1",
+  "versions": [{
+    "id": "1",
+    "name": "1.9.0",
+    "url": "http://code.jquery.com/jquery-1.9.0.js",
+    "dependencies": []
+  }]
+}, {
+  "id": 2,
+  "name": "jQuery UI",
+  "defaultVersion": "1",
+  "versions": [{
+    "id": "1",
+    "name": "1.9.2",
+    "url": "http://code.jquery.com/ui/1.9.2/jquery-ui.js",
+    "dependencies": [{
+      "type": "js",
+      "library": 1,
+      "required": true
+    }, {
+      "type": "css",
+      "library": 2,
+      "minVersion": "1",
+      "maxVersion": "1",
+      "required": false
+    }]
+  }, {
+    "id": "2",
+    "name": "1.8.24",
+    "url": "http://code.jquery.com/ui/1.8.2/jquery-ui.js",
+    "dependencies": [{
+      "type": "js",
+      "library": 1,
+      "required": true
+    }, {
+      "type": "css",
+      "library": 2,
+      "minVersion": "2",
+      "maxVersion": "2",
+      "required": false
+    }]
+  }]
+}]

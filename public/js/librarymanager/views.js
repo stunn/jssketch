@@ -42,7 +42,7 @@ define(
         name: library.get('name'),
         version: library.get('version'),
         colour: library.get('colour'),
-        deps: library.dependsOn
+        dependsOn: library.dependsOn
       })));
       this.$el.data('vm', library);
     }

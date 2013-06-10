@@ -290,18 +290,36 @@ ol#libraries li div.delete img
   vertical-align: text-bottom;
 }
 
-ol#libraries li div.index
+ol#libraries li div.refcol
 {
   display: inline-block;
-  height: 1.5em;
-  width: 1.5em;
+  height: 1em;
+  width: 1em;
+  border-radius: 2px;
+  margin-left: -0.5em;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+
+ol#libraries li ul.dependsOn
+{
+  display: inline-block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: 1em;
+}
+
+ol#libraries li ul.dependsOn li
+{
+  display: inline-block;
+  height: 0.8em;
+  width: 0.8em;
   background-color: #FF0000;
   border-radius: 2px;
-  text-align: center;
-  font-weight: bold;
-  color: #FFFFFF;
-  margin-left: -0.5em;
-  margin-right: 0.3em;
+  padding: 0;
+  margin: 0;
+  margin-right: 2px;
 }
 
 ol#libraries li span

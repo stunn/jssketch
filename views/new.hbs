@@ -50,9 +50,11 @@
       <div class="delete">
         <img src="img/ret/bin.png" width="16" height="16" />
       </div>
-      <div class="index">1</div>
-        \{{ name }}
-        <span>v\{{ version }}</span>
+      <div class="refcol" style="background-color: #\{{ colour }};"></div>\{{ name }}<ul class="dependsOn cf">
+      \{{#iter dependsOn}}
+        <li style="background-color: #\{{ properties.colour }};"></li>
+      \{{/iter}}
+      </ul><span>v\{{ version }}</span>
     </li>
   </script>
 </head>
