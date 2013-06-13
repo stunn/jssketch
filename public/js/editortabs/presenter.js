@@ -5,7 +5,7 @@ define(
   {
     ViewHelpers(Handlebars);
 
-    function Presenter(contId, tabs)
+    function Presenter(contId, tabs, coord)
     {
       this.editorCont = $(contId);
       this.editorTpl = Handlebars.compile($('#editor-tpl').html());
@@ -40,6 +40,7 @@ define(
       tabs.forEach(function (tab) {
         this.viewer.tabs.add(tab);
       }.bind(this));
+      coord.addViewer(this.viewer);
       this.viewer.set('current', tabs[0].get('id')); // TODO: Filthy.
 
       var that = this; // TODO: Repeat.
