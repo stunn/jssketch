@@ -147,8 +147,9 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
     var descriptors = this._model.properties;
 
     if (typeof key === 'object') {
-      var hash = key;
+      // Extra case for when optional array isn't provided.
       var isSilent = silent || (typeof value === 'boolean' ? value : false);
+      var hash = key;
       var isAccepted = (function () {
         if (Array.isArray(value)) {
           return function (key) {
@@ -165,11 +166,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
 
       Object.keys(hash).forEach(function (key) {
         if (descriptors.hasOwnProperty(key) && isAccepted(key)) {
-          this.set(key, hash[key], true);
-
-          if (!isSilent) {
-            this.trigger('change', key, true);
-          }
+          this.set(key, hash[key], !isSilent);
         }
       }, this);
 
@@ -178,6 +175,7 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
       }
     } else {
       var descriptor = descriptors[key];
+      var prev;
 
       if (typeof descriptor === 'undefined') {
         throw new Error('Model does not have a property called ' + key);
@@ -187,11 +185,13 @@ define(['models/eventable', 'models/collection'], function (eventable, Collectio
         value = descriptor.fallback;
       }
 
-      if (this.properties[key] !== value) {
+      prev = this.properties[key];
+
+      if (prev !== value) {
         this.properties[key] = value;
 
         if (!silent) {
-          this.trigger('change', key);
+          this.trigger('change', key, [value, prev]);
         }
       }
     }
