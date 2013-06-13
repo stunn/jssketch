@@ -40,10 +40,11 @@ define(
       );
 
       var tabs = [];
+      var cms = [];
       var foo = { js: 'javascript', html: 'htmlmixed', css: 'css' };
       Object.keys(foo).forEach(function (k) {
         var el = document.createElement('div');
-        CodeMirror(el, { mode: foo[k] });
+        cms.push(CodeMirror(el, { mode: foo[k] }));
         tabs.push(new Tab({
           id: k,
           contentEl: $(el),
@@ -60,6 +61,22 @@ define(
       var coordinator = new EditorCoordinator();
       new EditorPresenter($('#editor_1'), tabs, tabs[0], coordinator);
       new EditorPresenter($('#editor_2'), tabs, tabs[1], coordinator);
+
+      $('#run_btn').on('click', function (e) {
+        e.preventDefault();
+
+        var $form = $('#the-form');
+        $form.prop({
+          target: 'render',
+          action: $form.data('preview-url')
+        });
+
+        ['javascript', 'html', 'css'].forEach(function (v, k) {
+          $form.find('input[name="' + v + '"]').val(cms[k].getValue());
+        });
+
+        $form.submit();
+      });
     });
   }
 );
