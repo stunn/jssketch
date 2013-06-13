@@ -9,17 +9,12 @@
     {{#if sketch.id}}{{sketch.id}} v{{revision.id}} {{else}}Home{{/if}}
   </title>
 
-  {{#each stylesheets}}
-    <link rel="{{rel this}}" href="{{base this ../settings}}" />
-  {{/each}}
-
+  {{#iter stylesheets}}<link rel="{{rel this}}" href="{{asset this}}" />
+  {{/iter}}
   <!-- https://github.com/stunn/jssketch/issues/6 -->
-  <script>
-    (Object.keys || document.write(
-      "<script src=\"{{base "/js/es5-shim.js"}}\"><\/script>"));
-  </script>
+  <script>(Object.keys || document.write("<script src=\"{{asset "/js/es5-shim.js"}}\"><\/script>"));</script>
 
-  <script src="/js/require.js"></script>
+  <script src="{{asset "/js/require.js"}}"></script>
   <script>
     require.config({{jsonify requirejs}});
 
@@ -27,18 +22,15 @@
       "config": {
         "application": {
           "css": {{jsonify css}},
-          "js": {{jsonify js}},
-          "doctypes": {{jsonify doctypes}}
+      "js": {{jsonify js}},
+      "doctypes": {{jsonify doctypes}}
         }
       }
     });
 
     require({{jsonify scripts}});
   </script>
-
-  <script id="source-template" type="text/x-handlebars-template">
-    {{> preview}}
-  </script>
+  <script id="source-template" type="text/x-handlebars-template">{{> preview}}</script>
 
   <script id="library-list-tpl" type="text/x-handlebars-template">
     <ol id="libraries">
