@@ -121,7 +121,7 @@ module.exports = function (grunt) {
     }
 
     // Just ignore the .js files that are there to help us.
-    suites.push('!config/*', '!support/*');
+    suites.push('!config/**/*', '!support/**/*', '!browser/**/*');
 
     grunt.file.expand({
       cwd: testDir
