@@ -3,3 +3,4 @@ Thumbs.db
 all.*.*
 build
 VERSION
+config/config.json
