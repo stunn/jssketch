@@ -49,41 +49,27 @@
       </ul><span>v\{{ version }}</span>
     </li>
   </script>
+
+  <script id="editor-tpl" type="text/x-handlebars-template">
+    <div class="editor">
+      <nav class="editor-mode cf">
+        <ul>
+        </ul>
+      </nav>
+      <div class="editor-codepad"></div>
+    </div>
+  </script>
 </head>
 
 <body>
   <div id="top">
     <section id="editors">
       <!-- Editor 1 -->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li class="active">HTML</li>
-              <li>CSS</li>
-              <li>JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
-        </div>
+      <div class="editor-cont" id="editor_1">
       </div>
 
       <!-- Editor 2-->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li>HTML</li>
-              <li>CSS</li>
-              <li class="active">JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
-        </div>
+      <div class="editor-cont" id="editor_2">
       </div>
     </section>
 
