@@ -49,41 +49,27 @@
       </ul><span>v\{{ version }}</span>
     </li>
   </script>
+
+  <script id="editor-tpl" type="text/x-handlebars-template">
+    <div class="editor">
+      <nav class="editor-mode cf">
+        <ul>
+        </ul>
+      </nav>
+      <div class="editor-codepad"></div>
+    </div>
+  </script>
 </head>
 
 <body>
   <div id="top">
     <section id="editors">
       <!-- Editor 1 -->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li class="active">HTML</li>
-              <li>CSS</li>
-              <li>JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
-        </div>
+      <div class="editor-cont" id="editor_1">
       </div>
 
       <!-- Editor 2-->
-      <div class="editor-cont">
-        <div class="editor">
-          <nav class="editor-mode cf">
-            <ul>
-              <li>HTML</li>
-              <li>CSS</li>
-              <li class="active">JS</li>
-              <li>Result</li>
-              <li>Source</li>
-            </ul>
-          </nav>
-          <div class="editor-codepad"></div>
-        </div>
+      <div class="editor-cont" id="editor_2">
       </div>
     </section>
 
@@ -121,5 +107,23 @@
       <button id="collapse_btn">✔</button>
     </div>
   </div>
+
+  <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
+    <input type="hidden" name="sketch_id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
+    <input type="hidden" name="revision_id" value="{{#if revision.properties.id}}{{revision.properties.id}}{{/if}}" />
+
+    <input type="hidden" name="js_assets" value="[]" />
+    <input type="hidden" name="css_assets" value="[]" />
+    <input type="hidden" name="ajax" value="[]" />
+    <input type="hidden" name="doctype" value="1" />
+
+    <input type="hidden" name="javascript" value="" />
+    <input type="hidden" name="html" value="" />
+    <input type="hidden" name="css" value="" />
+  </form>
+
+  <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview"
+    sketch.properties.id revision.properties.id}}"{{/if}}
+    style="display: none;"></iframe>
 </body>
 </html>
