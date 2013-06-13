@@ -107,5 +107,9 @@
       <button id="collapse_btn">✔</button>
     </div>
   </div>
+
+  <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview"
+    sketch.properties.id revision.properties.id}}"{{/if}}
+    style="display: none;"></iframe>
 </body>
 </html>

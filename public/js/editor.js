@@ -9,11 +9,11 @@ function log(message)
 define(
   ['jquery', 'codemirror/lib/codemirror', 'application',
    'librarymanager/presenter', 'editortabs/presenter', 'editortabs/tab',
-   'editortabs/coordinator', 'handlebars', 'codemirror/mode/css/css',
-   'codemirror/mode/javascript/javascript', 'codemirror/mode/xml/xml',
-   'codemirror/mode/htmlmixed/htmlmixed'],
+   'editortabs/tabstrategies', 'editortabs/coordinator', 'handlebars',
+   'codemirror/mode/css/css', 'codemirror/mode/javascript/javascript',
+   'codemirror/mode/xml/xml', 'codemirror/mode/htmlmixed/htmlmixed'],
   function (jQuery, CodeMirror, Application, LibManagerPresenter,
-    EditorPresenter, Tab, EditorCoordinator)
+    EditorPresenter, Tab, tabStrategies, EditorCoordinator)
   {
     $(document).ready(function () {
       var libManagerPresenter = new LibManagerPresenter($('#library-manager'));
@@ -44,12 +44,22 @@ define(
       Object.keys(foo).forEach(function (k) {
         var el = document.createElement('div');
         CodeMirror(el, { mode: foo[k] });
-        tabs.push(new Tab({ id: k, contentEl: $(el) }));
+        tabs.push(new Tab({
+          id: k,
+          contentEl: $(el),
+          switchStrategy: tabStrategies.CodeMirrorStrategy
+        }));
       });
 
+      tabs.push(new Tab({
+        id: 'result',
+        contentEl: $('#render'),
+        switchStrategy: tabStrategies.PreviewStrategy
+      }));
+
       var coordinator = new EditorCoordinator();
-      new EditorPresenter($('#editor_1'), tabs, coordinator);
-      new EditorPresenter($('#editor_2'), tabs, coordinator);
+      new EditorPresenter($('#editor_1'), tabs, tabs[0], coordinator);
+      new EditorPresenter($('#editor_2'), tabs, tabs[1], coordinator);
     });
   }
 );

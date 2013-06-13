@@ -5,8 +5,10 @@ define(
   {
     ViewHelpers(Handlebars);
 
-    function Presenter(contId, tabs, coord)
+    function Presenter(contId, tabs, startTab, coord)
     {
+      var that = this;
+
       this.editorCont = $(contId);
       this.editorTpl = Handlebars.compile($('#editor-tpl').html());
 
@@ -24,16 +26,28 @@ define(
       }.bind(this));
 
       // Sync the active tab with the underlying viewmodel.
-      var that = this;
-      this.viewer.on('change', 'current', function () {
+      this.viewer.on('change', 'current', function (newVal, oldVal) {
         $tabs = that.editorCont.find('nav ul').children();
-        $tabs.removeClass('active');
+
+        if (typeof oldVal !== 'undefined') {
+          var oldTab = $tabs.filter(function () {
+            return $(this).data('model').get('id') === oldVal;
+          }).first();
+          oldTab.data('model').get('switchStrategy').hide(
+            oldTab.data('model').get('contentEl'),
+            that.editorCont.find('.editor-codepad'));
+          oldTab.removeClass('active');
+        }
+
         var newTab = $tabs.filter(function () {
-          return $(this).data('model').get('id') === that.viewer.get('current');
-        });
+          return $(this).data('model').get('id') === newVal;
+        }).first();
+
+        newTab.data('model').get('switchStrategy').show(
+          newTab.data('model').get('contentEl'),
+          that.editorCont.find('.editor-codepad'));
+
         newTab.addClass('active');
-        that.editorCont.find('.editor-codepad').html(
-          newTab.first().data('model').get('contentEl'));
       });
 
       // Set the tabs in to the viewer.
@@ -41,9 +55,8 @@ define(
         this.viewer.tabs.add(tab);
       }.bind(this));
       coord.addViewer(this.viewer);
-      this.viewer.set('current', tabs[0].get('id')); // TODO: Filthy.
+      this.viewer.set('current', startTab.get('id'));
 
-      var that = this; // TODO: Repeat.
       this.editorCont.find('nav ul').children().on('click', function (e) {
         e.preventDefault();
 
