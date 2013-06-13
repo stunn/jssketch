@@ -10,7 +10,8 @@ define(
   ['jquery', 'codemirror/lib/codemirror', 'application',
    'librarymanager/presenter', 'editortabs/presenter', 'editortabs/tab',
    'editortabs/coordinator', 'handlebars', 'codemirror/mode/css/css',
-   'codemirror/mode/javascript/javascript', 'codemirror/mode/xml/xml'],
+   'codemirror/mode/javascript/javascript', 'codemirror/mode/xml/xml',
+   'codemirror/mode/htmlmixed/htmlmixed'],
   function (jQuery, CodeMirror, Application, LibManagerPresenter,
     EditorPresenter, Tab, EditorCoordinator)
   {
@@ -38,16 +39,17 @@ define(
         ]
       );
 
-      // Throw out a quick editor ...
+      var tabs = [];
+      var foo = { js: 'javascript', html: 'htmlmixed', css: 'css' };
+      Object.keys(foo).forEach(function (k) {
+        var el = document.createElement('div');
+        CodeMirror(el, { mode: foo[k] });
+        tabs.push(new Tab({ id: k, contentEl: $(el) }));
+      });
+
       var coordinator = new EditorCoordinator();
-      var foo = document.createElement('div');
-      CodeMirror(foo);
-      var tabs = [
-        new Tab({ id: 'html', contentEl: foo}),
-        new Tab({ id: 'js', contentEl: $('<div>B</div>')})
-      ];
-      var editorPresenter = new EditorPresenter($('#editor_1'), tabs, coordinator);
-      var editorPresenter2 = new EditorPresenter($('#editor_2'), tabs, coordinator);
+      new EditorPresenter($('#editor_1'), tabs, coordinator);
+      new EditorPresenter($('#editor_2'), tabs, coordinator);
     });
   }
 );

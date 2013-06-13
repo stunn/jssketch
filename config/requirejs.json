@@ -13,7 +13,9 @@
 
     "codemirror/mode/javascript/javascript": ["codemirror/lib/codemirror"],
     "codemirror/mode/css/css": ["codemirror/lib/codemirror"],
-    "codemirror/mode/xml/xml": ["codemirror/lib/codemirror"]
+    "codemirror/mode/xml/xml": ["codemirror/lib/codemirror"],
+    "codemirror/mode/htmlmixed/htmlmixed":
+      ["codemirror/lib/codemirror", "codemirror/mode/xml/xml"]
   },
   "paths": {
     "codemirror": "../codemirror"
