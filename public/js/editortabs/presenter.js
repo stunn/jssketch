@@ -64,6 +64,10 @@ define(
       });
     }
 
+    Presenter.prototype.setActiveTab = function (tab) {
+      this.viewer.set('current', tab.get('id'));
+    };
+
     return Presenter;
   }
 );

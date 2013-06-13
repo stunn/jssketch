@@ -52,15 +52,16 @@ define(
         }));
       });
 
-      tabs.push(new Tab({
+      var resultTab = new Tab({
         id: 'result',
         contentEl: $('#render'),
         switchStrategy: tabStrategies.PreviewStrategy
-      }));
+      });
+      tabs.push(resultTab);
 
       var coordinator = new EditorCoordinator();
-      new EditorPresenter($('#editor_1'), tabs, tabs[0], coordinator);
-      new EditorPresenter($('#editor_2'), tabs, tabs[1], coordinator);
+      var e1 = new EditorPresenter($('#editor_1'), tabs, tabs[0], coordinator);
+      var e2 = new EditorPresenter($('#editor_2'), tabs, tabs[1], coordinator);
 
       $('#run_btn').on('click', function (e) {
         e.preventDefault();
@@ -74,6 +75,8 @@ define(
         ['javascript', 'html', 'css'].forEach(function (v, k) {
           $form.find('input[name="' + v + '"]').val(cms[k].getValue());
         });
+
+        e2.setActiveTab(resultTab);
 
         $form.submit();
       });
