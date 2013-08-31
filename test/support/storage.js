@@ -1,20 +1,57 @@
 module.exports.run = function (app) {
   var dm = app.client.dm;
+  var utils = require('utils');
   var broker = require('../../lib/broker');
   var Ajax = broker.load('models/ajax');
   var Revision = broker.load('models/revision');
   var revisionHelper = broker.load('helpers/revision');
 
-  var revision = new Revision();
-  var ajax = new Ajax({
-    payload: JSON.stringify({
-      test: 4
-    }),
-    type: 'json'
-  });
-  var sketchId;
+  function createRevision(opts) {
+    var revision = new Revision();
+
+    revisionHelper.updateRevisionFromHash(revision, app.config.get('doctypes'), dm, utils.extend({
+      javascript: 'alert(\'Hello\');',
+      css: 'body { background: red; }',
+      html: '<h1>Hello</h1>',
+      doctype: '1',
+      parentSketchId: '12345',
+      parentRevisionId: 1,
+      js_assets: [],
+      css_assets: [],
+      ajax: []
+    }, opts || {}));
+
+    return revision;
+  }
+
+  function createSavedRevision(done, opts) {
+    var revision = createRevision(opts);
+
+    app.client.saveRevision(revision, function (err, revision, sid) {
+      done(revision, sid);
+    });
+  }
+
+  function createAjax(opts) {
+    return new Ajax(utils.extend({
+      payload: JSON.stringify({
+        test: 4
+      }),
+      type: 'json'
+    }, opts || {}));
+  }
+
+  function createSavedAjax(done, opts) {
+    var ajax = createAjax(opts);
+
+    app.client.saveAjax(ajax, function (err, ajax) {
+      done(ajax);
+    });
+  }
 
   describe('AJAX', function () {
+    var ajax = createAjax();
+
     it('should save correctly', function (done) {
       app.client.saveAjax(ajax, function (err, ajax) {
         (err === null).should.be.true;
@@ -44,6 +81,8 @@ module.exports.run = function (app) {
   });
 
   describe('Revision', function () {
+    var sketchId;
+    var revision = new Revision();
     var hash = {
       js_assets: JSON.stringify([{
         type: 'js',
@@ -75,7 +114,6 @@ module.exports.run = function (app) {
           id: '1'
         }
       }]),
-      ajax: [ajax.get('id')],
       javascript: 'alert(\'Hello\');',
       css: 'body { background: red; }',
       html: '<h1>Hello</h1>',
@@ -149,7 +187,35 @@ module.exports.run = function (app) {
   });
 
   describe('AJAX Revision', function () {
-    var ajaxReqs = [ajax];
+    var ajaxReqs = [];
+    var revision;
+    var sketchId;
+
+    before(function (done) {
+      createSavedRevision(function (rev, sid) {
+        revision = rev;
+        sketchId = sid;
+
+        done();
+      });
+    });
+
+    before(function (done) {
+      createSavedAjax(function (a) {
+        ajaxReqs = [a];
+
+        done();
+      });
+    });
+
+    it('should retrieve empty ones correctly', function (done) {
+      app.client.loadAjaxForRevision(sketchId, revision.get('id'), function (err, reqs) {
+        (err === null).should.be.true;
+        reqs.should.be.an.instanceOf(Array);
+
+        done();
+      });
+    });
 
     it('should attach correctly', function (done) {
       app.client.saveAjaxForRevision(ajaxReqs, sketchId, revision.get('id'), function (err) {

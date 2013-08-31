@@ -85,7 +85,7 @@ MemoryStorage.prototype.getAjax = function (id, callback) {
 MemoryStorage.prototype.getAjaxForRevision = function (sketchId, revisionId, callback) {
   var that = this;
 
-  callback(null, JSON.parse(this._loadRevisionData(sketchId, revisionId).ajax).map(function (id) {
+  callback(null, JSON.parse(this._loadRevisionData(sketchId, revisionId).ajax || '[]').map(function (id) {
     return JSON.parse(that._ajax[id]);
   }));
 };
