@@ -67,6 +67,8 @@ define(
 
           $container.children().detach();
           $container.append($(el));
+
+          instance.refresh();
         });
 
         tab.on('hide', function (el, container) {
