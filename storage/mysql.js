@@ -48,11 +48,11 @@ MysqlStorage.prototype._withConnection = function (withConnection, errorHandler)
       errorHandler(new that.Error(err.message, true));
 
       if (connection) {
-        connection.end();
+        connection.release();
       }
     } else {
       withConnection(connection, function () {
-        connection.end();
+        connection.release();
       });
     }
   });

@@ -24,11 +24,6 @@ define(['models/model'], function (Model) {
 
           return 'Value must be a jQuery wrap over one or more DOM elements.';
         }
-      },
-      switchStrategy: {
-        type: 'object',
-        updateable: false,
-        required: true
       }
     },
   });

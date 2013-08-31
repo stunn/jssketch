@@ -12,6 +12,18 @@
   *zoom: 1;
 }
 
+.hidden {
+  display: none;
+}
+
+.lhs {
+  float: left;
+}
+
+.rhs {
+  float: right;
+}
+
 html
 {
   height: 100%;
@@ -22,7 +34,6 @@ html
 
 body
 {
-  display: table;
   height: 100%;
   width: 100%;
 
@@ -44,6 +55,12 @@ h1
   margin: 0 0 1em 0;
   color: #FFFFFF;
   text-shadow: 1px 1px 0px #777777;
+}
+
+#the-form {
+  display: table;
+  height: 100%;
+  width: 100%;
 }
 
 #top
@@ -68,7 +85,6 @@ h1
 
 .editor-cont
 {
-  float: left;
   display: block;
   width: 50%;
   height: 100%;
@@ -83,6 +99,21 @@ h1
 
   border-top: 0;
   background-color: #F7F7F7;
+
+  position: relative;
+}
+
+.editor-codepad
+{
+  position: absolute;
+  top: 45px;
+  width: 100%;
+  bottom: 0;
+  overflow: auto;
+}
+
+.editor-codepad.dummy {
+  display: none;
 }
 
 .editor-mode
@@ -110,6 +141,7 @@ h1
   border-top: 2px solid #DDDDDD;
   font-weight: bold;
   margin-bottom: 1px;
+  cursor: pointer;
 }
 
 .editor-mode ul li:first-child

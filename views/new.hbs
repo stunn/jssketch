@@ -22,9 +22,12 @@
       "config": {
         "application": {
           "css": {{jsonify css}},
-      "js": {{jsonify js}},
-      "doctypes": {{jsonify doctypes}}
+          "js": {{jsonify js}},
+          "doctypes": {{jsonify doctypes}}
         }
+      },
+      "editor": {
+        isNew: {{#if sketch.properties.id}}true{{else}}false{{/if}}
       }
     });
 
@@ -40,7 +43,7 @@
   <script id="library-tpl" type="text/x-handlebars-template">
     <li class="cf">
       <div class="delete">
-        <img src="img/ret/bin.png" width="16" height="16" />
+        <img src="/img/ret/bin.png" width="16" height="16" />
       </div>
       <div class="refcol" style="background-color: #\{{ colour }};"></div>\{{ name }}<ul class="dependsOn cf">
       \{{#iter dependsOn}}
@@ -57,58 +60,70 @@
         </ul>
       </nav>
       <div class="editor-codepad"></div>
+      \{{#if holdsPreview}}
+      <div class="editor-codepad dummy">
+        <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview"
+          sketch.properties.id revision.properties.id}}"{{/if}}></iframe>
+      </div>
+      \{{/if}}
     </div>
   </script>
 </head>
 
 <body>
-  <div id="top">
-    <section id="editors">
-      <!-- Editor 1 -->
-      <div class="editor-cont" id="editor_1">
-      </div>
-
-      <!-- Editor 2-->
-      <div class="editor-cont" id="editor_2">
-      </div>
-    </section>
-
-    <section id="config">
-      <section id="library-manager" class="cf">
-        <h1>Libraries</h1>
-
-        <!--<button id="addlib_btn">Add...</button>-->
-      </section>
-
-      <section>
-        <h1>External Assets</h1>
-      </section>
-
-      <section>
-        <h1>Mock AJAX Endpoints</h1>
-      </section>
-    </section>
-  </div>
-
-  <div id="bottom">
-    <div id="controls_main" class="cf">
-      <div class="abc">
-        <h1>jsSketch</h1>
-        <h2>beta</h2>
-      </div>
-
-      <div class="xyz">
-        <button id="run_btn">Run</button>
-        <button id="publish_btn">Publish</button>
-      </div>
-    </div>
-
-    <div id="controls_config">
-      <button id="collapse_btn">✔</button>
-    </div>
-  </div>
-
   <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
+    <div id="top">
+      <section id="editors">
+        <!-- Editor 1 -->
+        <div class="editor-cont lhs" id="editor_1">
+        </div>
+
+        <!-- Editor 2-->
+        <div class="editor-cont rhs" id="editor_2">
+        </div>
+      </section>
+
+      <section id="config">
+        <section id="library-manager" class="cf">
+          <h1>Libraries</h1>
+
+          <!--<button id="addlib_btn">Add...</button>-->
+        </section>
+
+        <section>
+          <h1>External Assets</h1>
+        </section>
+
+        <section>
+          <h1>Mock AJAX Endpoints</h1>
+        </section>
+
+        <div class="hidden">
+          <textarea name="javascript"></textarea>
+          <textarea name="html"></textarea>
+          <textarea name="css"></textarea>
+        </div>
+      </section>
+    </div>
+
+    <div id="bottom">
+      <div id="controls_main" class="cf">
+        <div class="abc">
+          <h1>jsSketch</h1>
+          <h2>beta</h2>
+        </div>
+
+        <div class="xyz">
+          <button id="run_btn">Run</button>
+          <button id="publish_btn" name="save" value="update">Publish</button>
+        </div>
+      </div>
+
+      <div id="controls_config">
+        <button id="collapse_btn">✔</button>
+      </div>
+    </div>
+
     <input type="hidden" name="sketch_id" value="{{#if sketch.properties.id}}{{sketch.properties.id}}{{/if}}" />
     <input type="hidden" name="revision_id" value="{{#if revision.properties.id}}{{revision.properties.id}}{{/if}}" />
 
@@ -116,14 +131,6 @@
     <input type="hidden" name="css_assets" value="[]" />
     <input type="hidden" name="ajax" value="[]" />
     <input type="hidden" name="doctype" value="1" />
-
-    <input type="hidden" name="javascript" value="" />
-    <input type="hidden" name="html" value="" />
-    <input type="hidden" name="css" value="" />
   </form>
-
-  <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview"
-    sketch.properties.id revision.properties.id}}"{{/if}}
-    style="display: none;"></iframe>
 </body>
 </html>
