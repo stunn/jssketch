@@ -24,10 +24,10 @@
           "css": {{jsonify css}},
           "js": {{jsonify js}},
           "doctypes": {{jsonify doctypes}}
+        },
+        "editor": {
+          isNew: {{#if sketch.properties.id}}false{{else}}true{{/if}}
         }
-      },
-      "editor": {
-        isNew: {{#if sketch.properties.id}}true{{else}}false{{/if}}
       }
     });
 
@@ -54,18 +54,14 @@
   </script>
 
   <script id="editor-tpl" type="text/x-handlebars-template">
-    <div class="editor">
-      <nav class="editor-mode cf">
-        <ul>
-        </ul>
-      </nav>
-      <div class="editor-codepad"></div>
-      \{{#if holdsPreview}}
-      <div class="editor-codepad dummy">
-        <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview"
-          sketch.properties.id revision.properties.id}}"{{/if}}></iframe>
+    <div class="editor-cont">
+      <div class="editor">
+        <nav class="editor-mode cf">
+          <ul>
+          </ul>
+        </nav>
+        <div class="editor-codepad"></div>
       </div>
-      \{{/if}}
     </div>
   </script>
 </head>
@@ -74,13 +70,6 @@
   <form id="the-form" method="post" data-save-url="{{base "save"}}" data-preview-url="{{jail "preview"}}">
     <div id="top">
       <section id="editors">
-        <!-- Editor 1 -->
-        <div class="editor-cont lhs" id="editor_1">
-        </div>
-
-        <!-- Editor 2-->
-        <div class="editor-cont rhs" id="editor_2">
-        </div>
       </section>
 
       <section id="config">
@@ -131,6 +120,8 @@
     <input type="hidden" name="css_assets" value="[]" />
     <input type="hidden" name="ajax" value="[]" />
     <input type="hidden" name="doctype" value="1" />
+
+    <iframe id="render" {{#if sketch.properties.id}}src="{{jail "preview" sketch.properties.id revision.properties.id}}"{{/if}}></iframe>
   </form>
 </body>
 </html>

@@ -8,12 +8,11 @@ function log(message)
 
 define(
   ['module', 'jquery', 'codemirror/lib/codemirror', 'application',
-   'librarymanager/presenter', 'editortabs/presenter', 'editortabs/tab',
-   'editortabs/coordinator', 'handlebars', 'codemirror/mode/css/css',
+   'librarymanager/presenter', 'editor/manager', 'editor/tab',
+   'handlebars', 'codemirror/mode/css/css',
    'codemirror/mode/javascript/javascript', 'codemirror/mode/xml/xml',
    'codemirror/mode/htmlmixed/htmlmixed'],
-  function (module, jQuery, CodeMirror, Application, LibManagerPresenter,
-    EditorPresenter, Tab, EditorCoordinator)
+  function (module, jQuery, CodeMirror, Application, LibManagerPresenter, EditorManager, Tab)
   {
     var config = module.config();
 
@@ -41,14 +40,34 @@ define(
         ]
       );
 
-      var coordinator = new EditorCoordinator();
-      var presenters = [];
-      var tabs = [];
       var editors = {
         javascript: 'javascript',
         html: 'htmlmixed',
         css: 'css'
       };
+      var editor = new EditorManager($('#editors'), {
+        panes: 2,
+        panesTemplate: (function () {
+          var template = Handlebars.compile($('#editor-tpl').html())();
+
+          return function (tab) {
+            var el = $(jQuery.parseHTML(template));
+
+            el.attr('id', 'tab-' + tab.get('id'));
+            el.find('.editor-codepad').append(tab.get('template'));
+            return el;
+          };
+        }()),
+        navContainer: '.editor-mode ul',
+        navBuilder: function (tab, isCurrent) {
+          var li = $(document.createElement('li'));
+
+          li.text(tab.get('id'));
+          li.toggleClass('active', isCurrent);
+
+          return li;
+        }
+      });
 
       Object.keys(editors).forEach(function (type) {
         var target = $('textarea[name="' + type + '"]');
@@ -57,78 +76,26 @@ define(
         });
         var tab = new Tab({
           id: type,
-          contentEl: $(instance.getWrapperElement())
+          template: $(instance.getWrapperElement()),
+          detachable: true
         });
 
         instance.setSize(null, '100%');
-
-        tab.on('show', function (el, container) {
-          var $container = $(container);
-
-          $container.children().detach();
-          $container.append($(el));
-
+        tab.on('show', function () {
           instance.refresh();
         });
 
-        tab.on('hide', function (el, container) {
-          $(container).children().detach();
-        });
-
-        tabs.push(tab);
+        editor.tabs.push(tab);
       });
 
-      (function () {
-        var tab = new Tab({
-          id: 'result',
-          contentEl: $('#render')
-        });
+      editor.tabs.push(new Tab({
+        id: 'result',
+        template: $('#render'),
+        detachable: false
+      }));
 
-        tabs.push(tab);
-
-        // The showing and hiding of the render iframe is handled by the
-        // presenter handlers below. This is because only one Editor contains
-        // the iframe, as detaching and reattaching an iframe causes it to
-        // reload, and we don't have enough context here for what we want to do.
-        //
-        // If the editor which holds the iframe is set to "render", its a simple
-        // change of tabs. Otherwise however, we swap the editors over using the
-        // "lhs" and "rhs" class toggles, and then swap which tabs are shown in
-        // each editor, to "fake" a change.
-      }());
-
-      presenters.push(new EditorPresenter($('#editor_1'), tabs, tabs[0], coordinator, false));
-      presenters.push(new EditorPresenter($('#editor_2'), tabs, config.isNew ? tabs[1] : tabs[tabs.length - 1], coordinator, true));
-
-      presenters.forEach(function (presenter) {
-        presenter.viewer.on('change', 'current', function (newVal, oldVal) {
-          if (newVal === 'result' && !presenter.viewer.holdsPreview) {
-            presenters.some(function (previewHolder) {
-              if (previewHolder.holdsPreview) {
-                oldVal = previewHolder.viewer.get('current');
-
-                // This will work now for only 2 editors. If further editors are
-                //  supported, this will need ... "work".
-                $(previewHolder.editorCont).add(presenter.editorCont)
-                                           .toggleClass('lhs')
-                                           .toggleClass('rhs');
-
-                presenter.viewer.set('current', oldVal);
-
-                return true;
-              }
-
-              return false;
-            });
-          }
-
-          if (presenter.holdsPreview && (newVal === 'result' || oldVal === 'result')) {
-            presenter.editorCont.find('.editor-codepad')
-                                .toggle(newVal !== 'result').filter('.dummy')
-                                .toggle(newVal === 'result');
-          }
-        });
-      });
+      editor.setActiveTab(0, 'javascript');
+      editor.setActiveTab(1, config.isNew ? 'html' : 'result');
 
       $('#run_btn').on('click', function (e) {
         var $form = $('#the-form');
@@ -140,15 +107,7 @@ define(
           action: $form.data('preview-url')
         });
 
-        // We could get cleverer with this, and show the iframe in an editor
-        // which is empty, or which isn't the most recently used.
-        presenters.some(function (p) {
-          if (p.holdsPreview) {
-            p.viewer.set('current', 'result');
-
-            return true;
-          }
-        })
+        editor.setActiveTab(1, 'result');
 
         $form.submit();
       });
