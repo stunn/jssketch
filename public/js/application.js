@@ -1,11 +1,11 @@
-define(['module', 'helpers/dm'], function (module, dmHelper) {
-  var config = module.config();
+var dmHelper = require('./helpers/dm');
 
-  return {
-    dm: dmHelper.fromSerializedForm({
-      css: config.css,
-      js: config.js
-    }),
-    doctypes: config.doctypes
-  };
-});
+module.exports = {
+  dm: dmHelper.fromSerializedForm({
+    css: Application.css,
+    js: Application.js
+  }),
+  doctypes: Application.doctypes
+};
+
+jQuery.extend(Application, module.exports);

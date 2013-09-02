@@ -1,59 +1,55 @@
-define(
-  ['handlebars', 'jquery', 'helpers/view'],
-  function (Handlebars, jQuery, ViewHelpers)
-  {
-    ViewHelpers(Handlebars);
+var viewHelpers = require('../helpers/view');
 
-    var libraryListViewTpl = Handlebars.compile($('#library-list-tpl').html());
+viewHelpers(Handlebars);
 
-    function LibraryListView()
-    {
-      this.$el = $(jQuery.parseHTML(libraryListViewTpl()));
-      this.itemIndex = [];
+var libraryListViewTpl = Handlebars.compile($('#library-list-tpl').html());
+
+function LibraryListView()
+{
+  this.$el = $(jQuery.parseHTML(libraryListViewTpl()));
+  this.itemIndex = [];
+}
+
+LibraryListView.prototype.appendItem = function (key, view) {
+  this.itemIndex.push({ key: key, view: view.render() });
+  this.$el.append(view.render());
+};
+
+LibraryListView.prototype.removeItem = function (key) {
+  this.itemIndex.some(function (v, k, collection) {
+    if (v.key != key) {
+      return false;
     }
 
-    LibraryListView.prototype.appendItem = function (key, view) {
-      this.itemIndex.push({ key: key, view: view.render() });
-      this.$el.append(view.render());
-    };
+    v.view.remove(v.view);
+    collection.splice(k, 1);
+    return true;
+  });
+};
 
-    LibraryListView.prototype.removeItem = function (key) {
-      this.itemIndex.some(function (v, k, collection) {
-        if (v.key != key) {
-          return false;
-        }
+LibraryListView.prototype.render = function () {
+  return this.$el;
+};
 
-        v.view.remove(v.view);
-        collection.splice(k, 1);
-        return true;
-      });
-    };
+var libraryViewTpl = Handlebars.compile($('#library-tpl').html());
 
-    LibraryListView.prototype.render = function () {
-      return this.$el;
-    };
+function LibraryView(library)
+{
+  this.library = library;
+  this.$el = $(jQuery.parseHTML(libraryViewTpl({
+    name: library.get('name'),
+    version: library.get('version'),
+    colour: library.get('colour'),
+    dependsOn: library.dependsOn
+  })));
+  this.$el.data('vm', library);
+}
 
-    var libraryViewTpl = Handlebars.compile($('#library-tpl').html());
+LibraryView.prototype.render = function () {
+  return this.$el;
+};
 
-    function LibraryView(library)
-    {
-      this.library = library;
-      this.$el = $(jQuery.parseHTML(libraryViewTpl({
-        name: library.get('name'),
-        version: library.get('version'),
-        colour: library.get('colour'),
-        dependsOn: library.dependsOn
-      })));
-      this.$el.data('vm', library);
-    }
-
-    LibraryView.prototype.render = function () {
-      return this.$el;
-    };
-
-    return {
-      LibraryListView: LibraryListView,
-      LibraryView: LibraryView,
-    };
-  }
-);
+module.exports = {
+  LibraryListView: LibraryListView,
+  LibraryView: LibraryView,
+};

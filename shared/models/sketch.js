@@ -1,10 +1,10 @@
-define(['models/model'], function (Model) {
-  return new Model({
-    properties: {
-      id: {
-        type: 'string',
-        updateable: false
-      }
+var Model = require('./model');
+
+module.exports = new Model({
+  properties: {
+    id: {
+      type: 'string',
+      updateable: false
     }
-  });
+  }
 });

@@ -1,10 +1,11 @@
-define(['models/model', 'editor/tab', ], function (Model, Tab) {
-	return new Model({
-		properties: {
-			active: {
-				type: Tab,
-				required: false
-			}
+var Model = require('../models/model');
+var Tab = require('./tab')
+
+module.exports = new Model({
+	properties: {
+		active: {
+			type: Tab,
+			required: false
 		}
-	});
+	}
 });

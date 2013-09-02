@@ -1,36 +1,37 @@
-define(['models/dependency', 'models/model', 'require'], function (Dependency, Model, require) {
-  return new Model({
-    properties: {
-      id: {
-        type: 'string',
-        updateable: false,
-        required: true
-      },
-      name: {
-        type: 'string',
-        updateable: false,
-        required: true
-      },
-      url: {
-        type: 'string',
-        updateable: false,
-        required: true
-      },
-      library: {
-        validator: function (el) {
-          if (!(el instanceof require('models/library'))) {
-            return 'Version does not belong to a library';
-          }
+var Model = require('./model');
+var Dependency = require('./dependency');
 
-          return true;
-        },
-        updateable: false,
-        required: false
-      }
+module.exports = new Model({
+  properties: {
+    id: {
+      type: 'string',
+      updateable: false,
+      required: true
     },
+    name: {
+      type: 'string',
+      updateable: false,
+      required: true
+    },
+    url: {
+      type: 'string',
+      updateable: false,
+      required: true
+    },
+    library: {
+      validator: function (el) {
+        if (!(el instanceof require('./library'))) {
+          return 'Version does not belong to a library';
+        }
 
-    collections: {
-      dependencies: Dependency
+        return true;
+      },
+      updateable: false,
+      required: false
     }
-  });
+  },
+
+  collections: {
+    dependencies: Dependency
+  }
 });

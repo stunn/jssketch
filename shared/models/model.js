@@ -1,339 +1,339 @@
-define(['models/eventable', 'models/collection'], function (eventable, Collection) {
+var Collection = require('./collection');
+var eventable = require('./eventable');
 
-  var defineProperty = (function () {
-    if (Object.defineProperty) {
-      return Object.defineProperty.bind(Object);
-    } else {
-      return function (obj, key, descriptor) {
-        obj[key] = descriptor.value;
-      };
-    }
-  }());
+var defineProperty = (function () {
+  if (Object.defineProperty) {
+    return Object.defineProperty.bind(Object);
+  } else {
+    return function (obj, key, descriptor) {
+      obj[key] = descriptor.value;
+    };
+  }
+}());
 
-  /*
-   * This is the Constructor that all Models will extend. Basically, the inheritance
-   * chain will be:
-   *
-   * (Model Instance) -> Model -> Base
-   */
-  function Base() {
+/*
+ * This is the Constructor that all Models will extend. Basically, the inheritance
+ * chain will be:
+ *
+ * (Model Instance) -> Model -> Base
+ */
+function Base() {
 
+}
+
+/**
+ * This adds on() and trigger() functionality
+ */
+eventable(Base);
+
+/**
+ * Validates the Model instance. If a profile is provided as the first
+ * parameter the properties are validated according to that profile. If no
+ * profile is provided, the properties are validated according to the options
+ * passed when the model was defined.
+ *
+ * This is designed to be useful if you have different validation requirements
+ * for different parts of your application; e.g. you can validate a 'Customer'
+ * according to one set of requirements in one part of your app, and by another
+ * set of requirements in another part.
+ *
+ * {
+ *   propName: {
+ *     required: false,
+ *     type: 'string',
+ *     validator: function () {
+ *       return true;
+ *     }
+ *   },
+ *   anotherPropName: {
+ *     // same as above
+ *   }
+ * }
+ *
+ * required checks the property has a value other than 'undefined'. Default: false
+ *
+ * type checks against the values 'typeof' result if 'type' is a 'string', or if
+ * type is a 'function', 'instanceof' is used to compare the value against the type.
+ *
+ * validator performs arbritary validation. Return an error message as a string
+ * if the validation fails, or some other value otherwise. First parameter to the
+ * validator function is the value, second is the property name.
+ *
+ * @param profile: Optional as specified above. Format of profile is given as an
+ *        example above.
+ * @return true if validation was successful
+ * @throws Error describing a validation error.
+ */
+Base.prototype.validate = function (profile) {
+  if (arguments.length === 0) {
+    profile = this._model.properties;
+  } else if (typeof profile !== 'object' || profile === null) {
+    throw new Error('Profile passed to validate() must be an object');
   }
 
-  /**
-   * This adds on() and trigger() functionality
-   */
-  eventable(Base);
+  var properties = this.properties;
 
-  /**
-   * Validates the Model instance. If a profile is provided as the first
-   * parameter the properties are validated according to that profile. If no
-   * profile is provided, the properties are validated according to the options
-   * passed when the model was defined.
-   *
-   * This is designed to be useful if you have different validation requirements
-   * for different parts of your application; e.g. you can validate a 'Customer'
-   * according to one set of requirements in one part of your app, and by another
-   * set of requirements in another part.
-   *
-   * {
-   *   propName: {
-   *     required: false,
-   *     type: 'string',
-   *     validator: function () {
-   *       return true;
-   *     }
-   *   },
-   *   anotherPropName: {
-   *     // same as above
-   *   }
-   * }
-   *
-   * required checks the property has a value other than 'undefined'. Default: false
-   *
-   * type checks against the values 'typeof' result if 'type' is a 'string', or if
-   * type is a 'function', 'instanceof' is used to compare the value against the type.
-   *
-   * validator performs arbritary validation. Return an error message as a string
-   * if the validation fails, or some other value otherwise. First parameter to the
-   * validator function is the value, second is the property name.
-   *
-   * @param profile: Optional as specified above. Format of profile is given as an
-   *        example above.
-   * @return true if validation was successful
-   * @throws Error describing a validation error.
-   */
-  Base.prototype.validate = function (profile) {
-    if (arguments.length === 0) {
-      profile = this._model.properties;
-    } else if (typeof profile !== 'object' || profile === null) {
-      throw new Error('Profile passed to validate() must be an object');
-    }
+  function error(reason) {
+    return reason;
+  }
 
-    var properties = this.properties;
+  // Standard for as we need to break out of it when an error occurs.
+  for (var key in profile) {
+    if (profile.hasOwnProperty(key)) {
+      var settings = profile[key];
 
-    function error(reason) {
-      return reason;
-    }
-
-    // Standard for as we need to break out of it when an error occurs.
-    for (var key in profile) {
-      if (profile.hasOwnProperty(key)) {
-        var settings = profile[key];
-
-        if (typeof properties[key] === 'undefined') {
-          // Check required
-          if (settings.required) {
-            return error(key + ' is required.');
-          }
-        } else {
-          // Check type
-          switch (typeof settings.type) {
-          case 'undefined':
-            break;
-          case 'string':
-            if (typeof properties[key] !== settings.type) {
-              return error(key + ' must be a ' + settings.type);
-            }
-
-            break;
-          case 'function':
-            if (!(properties[key] instanceof settings.type)) {
-              return error(key + ' is not a instance of the correct type');
-            }
-
-            break;
-          default:
-            throw new Error('type option for ' + key + ' is expected to be a string or function');
+      if (typeof properties[key] === 'undefined') {
+        // Check required
+        if (settings.required) {
+          return error(key + ' is required.');
+        }
+      } else {
+        // Check type
+        switch (typeof settings.type) {
+        case 'undefined':
+          break;
+        case 'string':
+          if (typeof properties[key] !== settings.type) {
+            return error(key + ' must be a ' + settings.type);
           }
 
-          // Check validator()
-          if (typeof settings.validator === 'function') {
-            var result = settings.validator.call(this, properties[key], key);
+          break;
+        case 'function':
+          if (!(properties[key] instanceof settings.type)) {
+            return error(key + ' is not a instance of the correct type');
+          }
 
-            if (typeof result === 'string') {
-              return error(result);
-            }
+          break;
+        default:
+          throw new Error('type option for ' + key + ' is expected to be a string or function');
+        }
+
+        // Check validator()
+        if (typeof settings.validator === 'function') {
+          var result = settings.validator.call(this, properties[key], key);
+
+          if (typeof result === 'string') {
+            return error(result);
           }
         }
       }
     }
+  }
 
-    return true;
-  };
+  return true;
+};
 
-  /**
-   * Updates either a single property on the object, or a hash of attributes.
-   *
-   * If a single property is to be updated, the first parameter should be the name
-   * of the attribute, and the second should be the new value. The third parameter
-   * defaults to false, and is whether the 'change' event for the update should be
-   * supressed.
-   *
-   * In the second case, the first parameter should be the hash which maps properties
-   * to values. Properties which do not exist on this Model will be ignored. The
-   * second parameter is an optional array, which provides a 'view' of which
-   * parameters from the given hash will be used. By default, all will be. The
-   * array overrrides any 'updateable' property on the model. The final parameter
-   * is 'silent', which behaves exactly as it does for the first use case.
-   *
-   * @param key: Name of value to update, or a hash of multiple values.
-   * @param value: The value to update to, or an array of which values to take
-   *        from the hash.
-   * @param silent: Whether the update will fire the 'change' event on the model
-   * @return self
-   */
-  Base.prototype.set = function (key, value, silent) {
+/**
+ * Updates either a single property on the object, or a hash of attributes.
+ *
+ * If a single property is to be updated, the first parameter should be the name
+ * of the attribute, and the second should be the new value. The third parameter
+ * defaults to false, and is whether the 'change' event for the update should be
+ * supressed.
+ *
+ * In the second case, the first parameter should be the hash which maps properties
+ * to values. Properties which do not exist on this Model will be ignored. The
+ * second parameter is an optional array, which provides a 'view' of which
+ * parameters from the given hash will be used. By default, all will be. The
+ * array overrrides any 'updateable' property on the model. The final parameter
+ * is 'silent', which behaves exactly as it does for the first use case.
+ *
+ * @param key: Name of value to update, or a hash of multiple values.
+ * @param value: The value to update to, or an array of which values to take
+ *        from the hash.
+ * @param silent: Whether the update will fire the 'change' event on the model
+ * @return self
+ */
+Base.prototype.set = function (key, value, silent) {
+  var descriptors = this._model.properties;
+
+  if (typeof key === 'object') {
+    // Extra case for when optional array isn't provided.
+    var isSilent = silent || (typeof value === 'boolean' ? value : false);
+    var hash = key;
+    var isAccepted = (function () {
+      if (Array.isArray(value)) {
+        return function (key) {
+          return value.indexOf(key) >= 0;
+        };
+      } else {
+        var props = descriptors;
+
+        return function (key) {
+          return props.hasOwnProperty(key) && props[key].updateable;
+        };
+      }
+    }).apply(this, arguments);
+
+    Object.keys(hash).forEach(function (key) {
+      if (descriptors.hasOwnProperty(key) && isAccepted(key)) {
+        this.set(key, hash[key], !isSilent);
+      }
+    }, this);
+
+    if (!isSilent) {
+      this.trigger('change', '*');
+    }
+  } else {
+    var descriptor = descriptors[key];
+    var prev;
+
+    if (typeof descriptor === 'undefined') {
+      throw new Error('Model does not have a property called ' + key);
+    }
+
+    if (typeof value === 'undefined') {
+      value = descriptor.fallback;
+    }
+
+    prev = this.properties[key];
+
+    if (prev !== value) {
+      this.properties[key] = value;
+
+      if (!silent) {
+        this.trigger('change', key, [value, prev]);
+      }
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Sets the given property to it's fallback value, or 'undefined' if none was
+ * given.
+ *
+ * @param key: The property to unset
+ * @param silent: Whether the 'change' event will fire on the model. Default false.
+ * @return self;
+ */
+Base.prototype.unset = function (key, silent) {
+  this.set(key, undefined, silent);
+
+  return this;
+};
+
+/**
+ * Returns the current value of the 'key' property. Throws an error if the key
+ * doesn't exist.
+ *
+ * @param key: The parameter to retrieve
+ * @return value
+ */
+Base.prototype.get = function (key) {
+  if (!this._model.properties.hasOwnProperty(key)) {
+    throw new Error('Model does not have the property ' + key);
+  }
+
+  return this.properties[key];
+};
+
+/**
+ * Returns the JSON representation of the object; which are it's properties.
+ *
+ * @see https://developer.mozilla.org/en/docs/JSON#toJSON()_method
+ * @return Object which represents the JSON representation of this model instance.
+ */
+Base.prototype.toJSON = function () {
+  var ret = {};
+
+  function move(obj) {
+    Object.keys(obj).forEach(function (key) {
+      ret[key] = obj[key];
+    });
+  }
+
+  move(this.properties);
+  move(this._model.collections);
+
+  return ret;
+};
+
+/**
+ * Creates a Constructor function for a new model. The settings in the example
+ * shown below for the property options are the defaults if left unspecified.
+ *
+ * {
+ *   properties: {
+ *     propName: {
+ *       required: false,
+ *       updateable: true,
+ *       type: someType,
+ *       validator: function (newValue) {
+ *         return true;
+ *       }
+ *     },
+ *     anotherPropName: {
+ *       /* same options as above; note all of them are optional.
+ *     }
+ *   },
+ *
+ *   collections: {
+ *     collectionName: collectionType,
+ *     anotherCollection: {
+ *       type: collectionType,
+ *       validator: function (newItem) {
+ *         return true;
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * @param model: Specifies the properties of the new model. See above for example
+ * @return A constructor for the model.
+ */
+module.exports = function (model) {
+  if (typeof model !== 'object' && !model.hasOwnProperty('properties')) {
+    throw new Error('Model must be provided with properties');
+  }
+
+  if (typeof model.collections !== 'object') {
+    model.collections = {};
+  }
+
+  function Constructor(properties) {
     var descriptors = this._model.properties;
 
-    if (typeof key === 'object') {
-      // Extra case for when optional array isn't provided.
-      var isSilent = silent || (typeof value === 'boolean' ? value : false);
-      var hash = key;
-      var isAccepted = (function () {
-        if (Array.isArray(value)) {
-          return function (key) {
-            return value.indexOf(key) >= 0;
-          };
-        } else {
-          var props = descriptors;
-
-          return function (key) {
-            return props.hasOwnProperty(key) && props[key].updateable;
-          };
-        }
-      }).apply(this, arguments);
-
-      Object.keys(hash).forEach(function (key) {
-        if (descriptors.hasOwnProperty(key) && isAccepted(key)) {
-          this.set(key, hash[key], !isSilent);
-        }
-      }, this);
-
-      if (!isSilent) {
-        this.trigger('change', '*');
-      }
-    } else {
-      var descriptor = descriptors[key];
-      var prev;
-
-      if (typeof descriptor === 'undefined') {
-        throw new Error('Model does not have a property called ' + key);
-      }
-
-      if (typeof value === 'undefined') {
-        value = descriptor.fallback;
-      }
-
-      prev = this.properties[key];
-
-      if (prev !== value) {
-        this.properties[key] = value;
-
-        if (!silent) {
-          this.trigger('change', key, [value, prev]);
-        }
-      }
+    switch (typeof properties) {
+    case 'object':
+      break;
+    case 'undefined':
+      properties = {};
+      break;
+    default:
+      throw new Error('Properties must be an object, or left undefined');
     }
 
-    return this;
-  };
+    defineProperty(this, 'properties', {
+      enumerable: false,
+      value: {}
+    });
 
-  /**
-   * Sets the given property to it's fallback value, or 'undefined' if none was
-   * given.
-   *
-   * @param key: The property to unset
-   * @param silent: Whether the 'change' event will fire on the model. Default false.
-   * @return self;
-   */
-  Base.prototype.unset = function (key, silent) {
-    this.set(key, undefined, silent);
+    defineProperty(this, '_events', {
+      enumerable: false,
+      value: {}
+    });
 
-    return this;
-  };
+    Object.keys(descriptors).forEach(function (key) {
+      this.set(key, properties[key], true);
+    }, this);
 
-  /**
-   * Returns the current value of the 'key' property. Throws an error if the key
-   * doesn't exist.
-   *
-   * @param key: The parameter to retrieve
-   * @return value
-   */
-  Base.prototype.get = function (key) {
-    if (!this._model.properties.hasOwnProperty(key)) {
-      throw new Error('Model does not have the property ' + key);
-    }
-
-    return this.properties[key];
-  };
-
-  /**
-   * Returns the JSON representation of the object; which are it's properties.
-   *
-   * @see https://developer.mozilla.org/en/docs/JSON#toJSON()_method
-   * @return Object which represents the JSON representation of this model instance.
-   */
-  Base.prototype.toJSON = function () {
-    var ret = {};
-
-    function move(obj) {
-      Object.keys(obj).forEach(function (key) {
-        ret[key] = obj[key];
+    Object.keys(model.collections).forEach(function (key) {
+      defineProperty(this, key, {
+        value: new Collection(model.collections[key]),
+        writeable: false,
+        enumerable: false
       });
+    }, this);
+
+    if (typeof Object.seal === 'function') {
+      Object.seal(this);
     }
+  }
 
-    move(this.properties);
-    move(this._model.collections);
+  Constructor.prototype = new Base();
+  Constructor.prototype._model = model;
 
-    return ret;
-  };
-
-  /**
-   * Creates a Constructor function for a new model. The settings in the example
-   * shown below for the property options are the defaults if left unspecified.
-   *
-   * {
-   *   properties: {
-   *     propName: {
-   *       required: false,
-   *       updateable: true,
-   *       type: someType,
-   *       validator: function (newValue) {
-   *         return true;
-   *       }
-   *     },
-   *     anotherPropName: {
-   *       /* same options as above; note all of them are optional.
-   *     }
-   *   },
-   *
-   *   collections: {
-   *     collectionName: collectionType,
-   *     anotherCollection: {
-   *       type: collectionType,
-   *       validator: function (newItem) {
-   *         return true;
-   *       }
-   *     }
-   *   }
-   * }
-   *
-   * @param model: Specifies the properties of the new model. See above for example
-   * @return A constructor for the model.
-   */
-  return function (model) {
-    if (typeof model !== 'object' && !model.hasOwnProperty('properties')) {
-      throw new Error('Model must be provided with properties');
-    }
-
-    if (typeof model.collections !== 'object') {
-      model.collections = {};
-    }
-
-    function Constructor(properties) {
-      var descriptors = this._model.properties;
-
-      switch (typeof properties) {
-      case 'object':
-        break;
-      case 'undefined':
-        properties = {};
-        break;
-      default:
-        throw new Error('Properties must be an object, or left undefined');
-      }
-
-      defineProperty(this, 'properties', {
-        enumerable: false,
-        value: {}
-      });
-
-      defineProperty(this, '_events', {
-        enumerable: false,
-        value: {}
-      });
-
-      Object.keys(descriptors).forEach(function (key) {
-        this.set(key, properties[key], true);
-      }, this);
-
-      Object.keys(model.collections).forEach(function (key) {
-        defineProperty(this, key, {
-          value: new Collection(model.collections[key]),
-          writeable: false,
-          enumerable: false
-        });
-      }, this);
-
-      if (typeof Object.seal === 'function') {
-        Object.seal(this);
-      }
-    }
-
-    Constructor.prototype = new Base();
-    Constructor.prototype._model = model;
-
-    return Constructor;
-  };
-});
+  return Constructor;
+};

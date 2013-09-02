@@ -1,18 +1,18 @@
-define(['models/model'], function (Model) {
-  return new Model({
-    properties: {
-      id: {
-        type: 'string',
-        updateable: false,
-        required: true
-      },
+var Model = require('../models/model');
 
-      detachable: {
-        type: 'boolean',
-        required: true
-      },
+module.exports = new Model({
+  properties: {
+    id: {
+      type: 'string',
+      updateable: false,
+      required: true
+    },
 
-      template: {}
-    }
-  });
+    detachable: {
+      type: 'boolean',
+      required: true
+    },
+
+    template: {}
+  }
 });

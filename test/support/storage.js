@@ -1,10 +1,9 @@
 module.exports.run = function (app) {
   var dm = app.client.dm;
   var utils = require('utils');
-  var broker = require('../../lib/broker');
-  var Ajax = broker.load('models/ajax');
-  var Revision = broker.load('models/revision');
-  var revisionHelper = broker.load('helpers/revision');
+  var Ajax = require('../shared/models/ajax');
+  var Revision = require('../shared/models/revision');
+  var revisionHelper = require('../shared/helpers/revision');
 
   function createRevision(opts) {
     var revision = new Revision();

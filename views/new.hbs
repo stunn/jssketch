@@ -11,28 +11,6 @@
 
   {{#iter stylesheets}}<link rel="{{rel this}}" href="{{asset this}}" />
   {{/iter}}
-  <!-- https://github.com/stunn/jssketch/issues/6 -->
-  <script>(Object.keys || document.write("<script src=\"{{asset "/js/es5-shim.js"}}\"><\/script>"));</script>
-
-  <script src="{{asset "/js/require.js"}}"></script>
-  <script>
-    require.config({{jsonify requirejs}});
-
-    require.config({
-      "config": {
-        "application": {
-          "css": {{jsonify css}},
-          "js": {{jsonify js}},
-          "doctypes": {{jsonify doctypes}}
-        },
-        "editor": {
-          isNew: {{#if sketch.properties.id}}false{{else}}true{{/if}}
-        }
-      }
-    });
-
-    require({{jsonify scripts}});
-  </script>
   <script id="source-template" type="text/x-handlebars-template">{{> preview}}</script>
 
   <script id="library-list-tpl" type="text/x-handlebars-template">
@@ -64,6 +42,19 @@
       </div>
     </div>
   </script>
+
+  <!-- https://github.com/stunn/jssketch/issues/6 -->
+  <script>(Object.keys || document.write("<script src=\"{{asset "/js/es5-shim.js"}}\"><\/script>"));</script>
+  <script>
+    var Application = Application || {};
+
+    Application.css = {{jsonify css}};
+    Application.js = {{jsonify js}};
+    Application.doctypes = {{jsonify doctypes}};
+    Application.isNew = {{#if sketch.properties.id}}false{{else}}true{{/if}};
+  </script>
+  {{#iter scripts}}<script src="{{asset this}}"></script>
+  {{/iter}}
 </head>
 
 <body>

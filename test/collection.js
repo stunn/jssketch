@@ -1,5 +1,4 @@
-var broker = require('../lib/broker');
-var Collection = broker.load('models/collection');
+var Collection = require('../shared/models/collection');
 
 describe('Collection', function () {
   it('should fire for each new element added', function () {

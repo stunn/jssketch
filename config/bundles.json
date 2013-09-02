@@ -8,6 +8,40 @@
       "css/main.css"
     ],
 
-    "js": true
+    "js": [
+      "js/support.js",
+      "js/jquery.js",
+      "js/jquery-ui.js",
+      "js/handlebars.js",
+      "codemirror/lib/codemirror.js",
+      "codemirror/mode/css/css.js",
+      "codemirror/mode/javascript/javascript.js",
+      "codemirror/mode/xml/xml.js",
+      "codemirror/mode/htmlmixed/htmlmixed.js",
+      "js/models/eventable.js",
+      "js/models/collection.js",
+      "js/models/model.js",
+      "js/models/dependency.js",
+      "js/models/version.js",
+      "js/models/library.js",
+      "js/models/asset.js",
+      "js/models/sketch.js",
+      "js/models/revision.js",
+      "js/lib/dm.js",
+      "js/lib/hashtable.js",
+      "js/helpers/dm.js",
+      "js/helpers/revision.js",
+      "js/helpers/view.js",
+      "js/application.js",
+      "js/librarymanager/views.js",
+      "js/librarymanager/models.js",
+      "js/librarymanager/jsonreader.js",
+      "js/librarymanager/presenter.js",
+      "js/editor/tab.js",
+      "js/editor/pane.js",
+      "js/editor/frame.js",
+      "js/editor/manager.js",
+      "js/editor.js"
+    ]
   }
 }

@@ -1,6 +1,4 @@
-var broker = require('../lib/broker');
-
-var dmHelper = broker.load('helpers/dm');
+var dmHelper = require('../shared/helpers/dm');
 var utils = require('utils');
 
 describe('DependencyManager Helper', function () {

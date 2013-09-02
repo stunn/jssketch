@@ -1,31 +1,23 @@
 module.exports = function (grunt) {
   var bundles = grunt.file.readJSON('./config/bundles.json');
+  var config = grunt.file.readJSON('./config/config.json');
 
   grunt.initConfig({
-    requirejs: {
+    copy: {
       dist: {
-        options: grunt.util._.merge(grunt.file.readJSON('./config/requirejs.json'), {
-          appDir: __dirname + '/public',
-          baseUrl: 'js',
-          dir: 'build',
-          preserveLicenseComments: false,
-          skipDirOptimize: true,
-          paths: {
-            lib: '../../shared/lib',
-            helpers: '../../shared/helpers',
-            models: '../../shared/models',
-          },
-          modules: Object.keys(bundles).filter(function (name) {
-            return this[name].js;
-          }, bundles).map(function (name) {
-            return {
-              name: name
-            };
-          })
-        })
+        files: [{
+          expand: true,
+          cwd: 'public',
+          src: '**/*',
+          dest: 'build/'
+        }, {
+          expand: true,
+          cwd: 'shared',
+          src: '**/*',
+          dest: 'build/js/'
+        }]
       }
     },
-
     jshint: {
       options: {
         node: true,
@@ -69,25 +61,63 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 
   grunt.registerTask('buildcss', function () {
+
+    if (config.production) {
+      var minifier = require('mini-fier').create();
+      var async = this.async();
+
+      Object.keys(bundles).forEach(function (name) {
+        var files = bundles[name].css || [];
+
+        minifier.css({
+          srcPath: __dirname + '/build/',
+          filesIn: files,
+          destination: __dirname + '/build/css/all.' + name + '.css'
+        }).on('error', function () {
+          console.log(arguments);
+          async(false);
+        }).on('complete', function () {
+          async();
+        });
+      });
+    }
+  });
+
+  grunt.registerTask('buildjs', function () {
     var minifier = require('mini-fier').create();
-    var async = this.async();
+    var path = require('path');
 
-    Object.keys(bundles).forEach(function (name) {
-      var files = bundles[name].css || [];
-
-      minifier.css({
-        srcPath: __dirname + '/public/',
-        filesIn: files,
-        destination: __dirname + '/build/css/all.' + name + '.css'
-      }).on('error', function () {
-        async(false);
-      }).on('complete', function () {
-        async();
+    grunt.file.expand('build/**/*.js').forEach(function (file) {
+      grunt.file.copy(file, file, {
+        process: function (contents, folder) {
+          return 'define(\'' + folder + '\', function (require, module) {\n' + contents + '\n});'
+        },
+        noProcess: 'build/js/support.js'
       });
     });
+
+    if (config.production) {
+      var async = this.async();
+
+      Object.keys(bundles).forEach(function (name) {
+        var files = bundles[name].js || [];
+
+        minifier.js({
+          srcPath: __dirname + '/build/',
+          filesIn: files,
+          destination: __dirname + '/build/js/all.' + name + '.js'
+        }).on('error', function () {
+          console.log(arguments);
+          async(false);
+        }).on('complete', function () {
+          async();
+        });
+      });
+    }
   });
 
   /**
@@ -136,5 +166,5 @@ module.exports = function (grunt) {
     });
   });
 
-  grunt.registerTask('build', ['requirejs', 'buildcss']);
+  grunt.registerTask('build', ['copy', 'buildjs', 'buildcss']);
 };

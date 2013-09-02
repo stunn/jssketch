@@ -1,9 +1,7 @@
 'use strict';
 
 var path = require('path');
-
-var broker = require('../lib/broker');
-var Model = broker.load('models/model');
+var Model = require('../shared/models/model');
 
 function config(name) {
   return path.join(__dirname, '..', 'config', name + '.json');
