@@ -24,6 +24,19 @@ module.exports = function (Handlebars) {
     return str.replace(/\n/g, '\n' + spaces);
   });
 
+  Handlebars.registerHelper('scripts', function (arr) {
+    if (!Array.isArray(arr)) {
+      return '';
+    }
+
+    return new Handlebars.SafeString(arr.map(function (script) {
+      // There should really be a better way of doing this, but meh. The {} is to
+      // fake the data object Handlebars automatically gives to helper calls, which
+      // the asset helper assumes exists.
+      return '<script src="' + Handlebars.helpers.asset.call(null, script, {}) + '"></script>';
+    }).join('\n'));
+  });
+
   /**
    * This is a stolen copy of the #each helper, but which treats array-like
    * objects as arrays (i.e. objects with a `.length` property which is a number)

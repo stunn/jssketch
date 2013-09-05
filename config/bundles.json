@@ -41,7 +41,8 @@
       "js/editor/pane.js",
       "js/editor/frame.js",
       "js/editor/manager.js",
-      "js/editor.js"
+      "js/editor.js",
+      "js/main.js"
     ]
   }
 }

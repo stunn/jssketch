@@ -2,10 +2,10 @@ var dmHelper = require('./helpers/dm');
 
 module.exports = {
   dm: dmHelper.fromSerializedForm({
-    css: Application.css,
-    js: Application.js
+    css: jsSketch.css,
+    js: jsSketch.js
   }),
-  doctypes: Application.doctypes
+  doctypes: jsSketch.doctypes
 };
 
-jQuery.extend(Application, module.exports);
+jQuery.extend(jsSketch, module.exports);

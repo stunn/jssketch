@@ -18,12 +18,15 @@ module.exports = function (grunt) {
         }]
       }
     },
+    watch: {
+      dist: {
+        files: ['public/**/*', 'shared/**/*'],
+        tasks: ['build']
+      }
+    },
     jshint: {
       options: {
         node: true,
-        globals: {
-          define: true
-        },
         loopfunc: true,
         curly: true,
         eqeqeq: true,
@@ -52,9 +55,6 @@ module.exports = function (grunt) {
         src: 'test/**/*.js'
       },
       shared: {
-        globals: {
-          define: true
-        },
         src: 'shared/**/*.js'
       }
     }
@@ -62,10 +62,9 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('buildcss', function () {
-
     if (config.production) {
       var minifier = require('mini-fier').create();
       var async = this.async();

@@ -1,48 +1,18 @@
-function log(message)
-{
-  if (typeof console !== "undefined")
-  {
-    console.log(message);
-  }
-}
+jQuery(document).ready(function ($) {
+  var Sketch = require('./models/sketch');
+  var Revision = require('./models/revision');
+  var revisionHelper = require('./helpers/revision');
 
-var LibManagerPresenter = require('./librarymanager/presenter');
-var EditorManager = require('./editor/manager');
-var Tab = require('./editor/tab');
-var Sketch = require('./models/sketch');
-var Revision = require('./models/revision');
-var revisionHelper = require('./helpers/revision');
-
-$(document).ready(function () {
-  var libManagerPresenter = new LibManagerPresenter($('#library-manager'));
-  libManagerPresenter.loadFromJSON(
-    [
-      {
-        libraryType: 'js',
-        libraryId: 1,
-        versionId: '1',
-        dependsOn: null
-      },
-      {
-        libraryType: 'js',
-        libraryId: 2,
-        versionId: '1',
-        dependsOn: [{
-          libraryType: 'js',
-          libraryId: 1,
-          versionId: '1',
-          dependsOn: null
-        }]
-      }
-    ]
-  );
+  var EditorManager = require('./editor/manager');
+  var Tab = require('./editor/tab');
 
   var editors = {
     javascript: 'javascript',
     html: 'htmlmixed',
     css: 'css'
   };
-  var editor = new EditorManager($('#editors'), {
+
+  var editor = module.exports = new EditorManager($('#editors'), {
     panes: 2,
     panesTemplate: (function () {
       var template = Handlebars.compile($('#editor-tpl').html())();
@@ -117,13 +87,14 @@ $(document).ready(function () {
       var revision = new Revision();
       var sketch = new Sketch();
 
-      revisionHelper.updateRevisionFromHash(revision, Application.doctypes, Application.dm, prep());
+      revisionHelper.updateRevisionFromHash(revision, jsSketch.doctypes, jsSketch.dm, prep());
 
       cm.refresh();
       cm.setValue(sourceTemplate({
+        full: false,
         revision: revision,
         sketch: sketch,
-        doctype: Application.doctypes[revision.get('doctype')]
+        doctype: jsSketch.doctypes[revision.get('doctype')]
       }));
     });
 
@@ -136,35 +107,11 @@ $(document).ready(function () {
     detachable: false
   }));
 
-  if (Application.isNew) {
+  if (jsSketch.isNew) {
     editor.setActiveTab(0, 'javascript');
     editor.setActiveTab(1, 'html');
   } else {
     editor.setActiveTab(0, 'view source');
     editor.setActiveTab(1, 'result');
   }
-
-  $('#run_btn').on('click', function (e) {
-    var $form = $('#the-form');
-
-    e.preventDefault();
-
-    $form.prop({
-      target: 'render',
-      action: $form.data('preview-url')
-    });
-
-    editor.setActiveTab(1, 'result');
-
-    $form.submit();
-  });
-
-  $('#publish_btn').on('click', function (e) {
-    var $form = $('#the-form');
-
-    $form.prop({
-      target: '_self',
-      action: $form.data('save-url')
-    });
-  });
 });
