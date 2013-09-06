@@ -1,6 +1,5 @@
 module.exports = function (grunt) {
   var bundles = grunt.file.readJSON('./config/bundles.json');
-  var config = grunt.file.readJSON('./config/config.json');
 
   grunt.initConfig({
     copy: {
@@ -64,32 +63,27 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('buildcss', function () {
-    if (config.production) {
-      var minifier = require('mini-fier').create();
-      var async = this.async();
+  grunt.registerTask('minifycss', function () {
+    var minifier = require('mini-fier').create();
+    var async = this.async();
 
-      Object.keys(bundles).forEach(function (name) {
-        var files = bundles[name].css || [];
+    Object.keys(bundles).forEach(function (name) {
+      var files = bundles[name].css || [];
 
-        minifier.css({
-          srcPath: __dirname + '/build/',
-          filesIn: files,
-          destination: __dirname + '/build/css/all.' + name + '.css'
-        }).on('error', function () {
-          console.log(arguments);
-          async(false);
-        }).on('complete', function () {
-          async();
-        });
+      minifier.css({
+        srcPath: __dirname + '/build/',
+        filesIn: files,
+        destination: __dirname + '/build/css/all.' + name + '.css'
+      }).on('error', function () {
+        console.log(arguments);
+        async(false);
+      }).on('complete', function () {
+        async();
       });
-    }
+    });
   });
 
   grunt.registerTask('buildjs', function () {
-    var minifier = require('mini-fier').create();
-    var path = require('path');
-
     grunt.file.expand('build/**/*.js').forEach(function (file) {
       grunt.file.copy(file, file, {
         process: function (contents, folder) {
@@ -98,25 +92,26 @@ module.exports = function (grunt) {
         noProcess: 'build/js/support.js'
       });
     });
+  });
 
-    if (config.production) {
-      var async = this.async();
+  grunt.registerTask('minifyjs', function () {
+    var minifier = require('mini-fier').create();
+    var async = this.async();
 
-      Object.keys(bundles).forEach(function (name) {
-        var files = bundles[name].js || [];
+    Object.keys(bundles).forEach(function (name) {
+      var files = bundles[name].js || [];
 
-        minifier.js({
-          srcPath: __dirname + '/build/',
-          filesIn: files,
-          destination: __dirname + '/build/js/all.' + name + '.js'
-        }).on('error', function () {
-          console.log(arguments);
-          async(false);
-        }).on('complete', function () {
-          async();
-        });
+      minifier.js({
+        srcPath: __dirname + '/build/',
+        filesIn: files,
+        destination: __dirname + '/build/js/all.' + name + '.js'
+      }).on('error', function () {
+        console.log(arguments);
+        async(false);
+      }).on('complete', function () {
+        async();
       });
-    }
+    });
   });
 
   /**
@@ -165,5 +160,6 @@ module.exports = function (grunt) {
     });
   });
 
-  grunt.registerTask('build', ['copy', 'buildjs', 'buildcss']);
+  grunt.registerTask('build', ['copy', 'buildjs']);
+  grunt.registerTask('minify', ['minifyjs', 'minifycss']);
 };
